@@ -1,0 +1,60 @@
+The columns availabe when getting a table's schema are as follows:
+    ColumnName
+    ColumnOrdinal
+    ColumnSize
+    NumericPrecision
+    NumericScale
+    IsUnique
+    IsKey
+    BaseCatalogName
+    BaseColumnName
+    BaseSchemaName
+    BaseTableName
+    DataType
+    AllowDBNull
+    ProviderType
+    IsAliased
+    IsExpression
+    IsIdentity
+    IsAutoIncrement
+    IsRowVersion
+    IsHidden
+    IsLong
+    IsReadOnly
+So you could doing something like this to get the column name:
+    DataTable.Rows[0]["ColumnName"]
+    
+Code for converting the string description of geometry to an AO geometry type:
+        If sGeomTypeString = "GEOMETRY" Then
+            MsgBox "Ne traite pas les types GEOMETRY"
+            Resume Next
+        ElseIf m_sGeometryTypeAsString = "POINT" Then
+            GType = esriGeometryPoint
+        ElseIf m_sGeometryTypeAsString = "MULTIPOINT" Then
+            GType = esriGeometryMultipoint
+        ElseIf m_sGeometryTypeAsString = "LINESTRING" Or m_sGeometryTypeAsString = "MULTILINESTRING" Then
+            GType = esriGeometryPolyline
+        ElseIf m_sGeometryTypeAsString = "POLYGON" Or m_sGeometryTypeAsString = "MULTIPOLYGON" Then
+            GType = esriGeometryPolygon
+        End If
+        
+Code for converting from PgSQL field type to AO field type:
+    Select Case curField(2)
+        Case adBigInt, adDecimal, adDouble, adUnsignedBigInt: FType = esriFieldTypeDouble
+        Case adNumeric, adSingle, adSmallInt, adTinyInt: FType = esriFieldTypeInteger
+        Case adUnsignedSmallInt, adUnsignedTinyInt, adInteger, adUnsignedInt: FType = esriFieldTypeInteger
+        Case adBoolean: FType = esriFieldTypeInteger
+        Case adChar, adWChar, adVarWChar, adLongVarChar, adLongVarWChar, adVarChar: FType = esriFieldTypeString
+        Case adDate, adDBDate, adDBTime, adDBTimeStamp: FType = esriFieldTypeDate
+        Case Else: FType = esriFieldTypeBlob
+    End Select
+    
+Implement IWorkspaceEdit to get editing capabilities.  See also ITransactions.
+
+Look into ISpatialCacheManager(2) for speed increase.
+
+Look into IReplica for handling check-outs.
+
+IWorkspaceProperties is necessary to view attribute table.
+
+In the future, use the GEOS library to do WKB parsing.
