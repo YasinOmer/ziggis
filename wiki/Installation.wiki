@@ -1,0 +1,19 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+*ZigGis is a PostGIS connector for ArcGIS* that allows loading and viewing of PostGIS layers. The hope is to eventually get ZigGis so that it will also edit PostGIS layers.
+We have imported the svn project (ZigGis 1.1 release) in google code, source code can be checked out at
+this address:
+
+http://ziggis.googlecode.com/svn/
+
+People just interested in downloading and install ZigGis can just download the installer, that can be found here:
+
+http://ziggis.googlecode.com/svn/trunk/download/ZigGis11.zip
+
+
+= How to install ZigGis =
+
+
+
