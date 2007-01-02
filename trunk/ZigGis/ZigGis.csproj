@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Pulp.ArcGis.ZigGis</RootNamespace>
-    <AssemblyName>Pulp.ArcGis.ZigGis.Button</AssemblyName>
+    <AssemblyName>ZigGis</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,10 +27,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>true</RegisterForComInterop>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ESRI.ArcGIS.ArcMapUI, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Carto, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
+    <Reference Include="ESRI.ArcGIS.CartoUI, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Display, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Framework, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Geodatabase, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
@@ -91,11 +93,13 @@
   <ItemGroup>
     <Content Include="license.txt" />
     <Content Include="notes.txt" />
+    <Content Include="readme.txt" />
     <EmbeddedResource Include="zig.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="example.zig" />
     <None Include="logging.config" />
+    <None Include="ZigGisObjectModel.cd" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\add_form.resx">

@@ -7,6 +7,7 @@ using ZigGis.Utilities;
 using ESRI.ArcObjects.Core;
 #else
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.CartoUI;
 using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.Geodatabase;
@@ -1219,7 +1220,9 @@ namespace ZigGis.ArcGIS.Geodatabase
         #region IIdentify2
         IArray IIdentify2.Identify(IGeometry pGeom, ITrackCancel pTrackCancel)
         {
-            return ((IIdentify2)featureLayer).Identify(pGeom, pTrackCancel);
+            
+            IArray arr = ((IIdentify2)featureLayer).Identify(pGeom, pTrackCancel);
+            return arr;
         }
 
         double IIdentify2.Scale

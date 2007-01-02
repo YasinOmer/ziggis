@@ -75,9 +75,9 @@ namespace ZigGis.ArcGIS.ArcMapUI //Pulp.ArcGis.ZigGis
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 41);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 13);
+            this.label2.Size = new System.Drawing.Size(75, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "PostGIS Table";
+            this.label2.Text = "PostGIS Layer";
             // 
             // openFileDlg
             // 
