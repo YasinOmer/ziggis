@@ -574,12 +574,20 @@ namespace ZigGis.ArcGIS.Geodatabase
             {
                 Helper.checkWithinBounds(Index, postGisFeatureClass.Fields.FieldCount);
                 retVal = values[Index];
+                //explicit cast for esriFieldTypeDouble and esriFieldTypeInteger (if not doing so ArcMap won't show or will crash)
+                if (postGisFeatureClass.Fields.get_Field(Index).Type == esriFieldType.esriFieldTypeDouble)
+                {
+                    retVal = (object)double.Parse(retVal.ToString());
+                }
+                if (postGisFeatureClass.Fields.get_Field(Index).Type == esriFieldType.esriFieldTypeInteger)
+                {
+                    retVal = (object)int.Parse(retVal.ToString());
+                }
             }
             finally
             {
                 //log.leaveFunc();
             }
-
             return retVal;
         }
 
@@ -811,6 +819,18 @@ namespace ZigGis.ArcGIS.Geodatabase
             m_scale = (int)row["NumericScale"];
             m_nullable = (bool)row["AllowDBNull"];
             m_length = (Type == esriFieldType.esriFieldTypeGeometry ? 0 : (int)row["ColumnSize"]);
+            //esriFieldTypeGeometry: length=0
+            if (Type == esriFieldType.esriFieldTypeGeometry)
+            {
+                m_length = 0;
+            }
+            //esriFieldTypeDouble: SchemaTable not contains precision,scale,length
+            if (Type == esriFieldType.esriFieldTypeDouble)
+            {
+                m_length = 8;
+                m_precision = 0;
+                m_scale = 0;
+            }
         }
 
         private Layer m_layer;
@@ -829,11 +849,12 @@ namespace ZigGis.ArcGIS.Geodatabase
                 m_type = esriFieldType.esriFieldTypeOID;
             else
             {
-                if (type == typeof(double))
+                //PG Int8 (.NET Int64) makes ArcMap crash & PG Numeric (.NET Decimal) takes all null values 
+                if (type == typeof(double) || type == typeof(Decimal))
                     m_type = esriFieldType.esriFieldTypeDouble;
-                else if (type == typeof(int) || type == typeof(Int32))
+                else if (type == typeof(Int32) || type == typeof(Int64))
                     m_type = esriFieldType.esriFieldTypeInteger;
-                else if (type == typeof(Int16))
+                else if (type == typeof(Int16) || type == typeof(Byte))
                     m_type = esriFieldType.esriFieldTypeSmallInteger;
                 else if (type == typeof(string))
                     m_type = esriFieldType.esriFieldTypeString;

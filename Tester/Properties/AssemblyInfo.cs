@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tester")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("ZigGis")]
+[assembly: AssemblyDescription("An Open Source PostGis connector for Esri ArcGis Desktop")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("IPI")]
-[assembly: AssemblyProduct("Tester")]
-[assembly: AssemblyCopyright("Copyright © IPI 2006")]
+[assembly: AssemblyCompany("Pulp Soft")]
+[assembly: AssemblyProduct("ZigGis")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

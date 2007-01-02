@@ -26,4 +26,4 @@ password = psqluser
 ; This is the complete path to the log4net config file.
 ; An example log4net config file is included.  See
 ; the log4net documentation for more help.
-configfile = C:\training\ZigGis11\ZigGis\ZigGis\logging.config
+configfile = C:\ziggis\ZigGis\logging.config
