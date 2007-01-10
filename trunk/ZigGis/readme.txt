@@ -1,5 +1,5 @@
 ZigGis 1.1
-developers: Abe Gillspie, Paolo Corti
+developers: Abe Gillspie, Paolo Corti, Bill Dollins
 
 PostGIS connector for ArcGIS
 ZigGis is an ArcGis plug-in that allows loading and viewing of PostGIS layers. The hope is to eventually get ZigGis so that it will also edit PostGIS layers.
@@ -55,6 +55,10 @@ Feel free to add any issue you get in if it is not in this list, or any request 
 For support and help please don't email us or post the help request in the PostGis or Esri forums, but use the ZigGis group: http://groups.google.com/group/ziggis
 
 ***** RELEASE HISTORY *****
+
+10/01/2006, zigGIS 1.1.0.30072
+Added support for PostGIS layer with a srid different than the undefined one (srid=-1). Previous versions were not drawing these layer.
+
 02/01/2006, zigGIS 1.1.0.29230
 Added support for int8, numeric and date Postgre datatypes.
 At this time Postgre tested datatypes for ZigGis are: 
