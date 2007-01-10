@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csp
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ZigGisSetup", "ZigGisSetup\ZigGisSetup.vdproj", "{A5AE710F-D584-4286-B34D-C1F4C99AFA22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZigGisSimpleWinApp", "ZigGisSimpleWinApp\ZigGisSimpleWinApp.csproj", "{D99A0F56-6C76-49CC-86EF-FC776BB2BF75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{35096DB4-8814-41B8-86E9-9A52CF2AF033}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A5AE710F-D584-4286-B34D-C1F4C99AFA22}.Debug|Any CPU.ActiveCfg = Debug
 		{A5AE710F-D584-4286-B34D-C1F4C99AFA22}.Release|Any CPU.ActiveCfg = Release
+		{D99A0F56-6C76-49CC-86EF-FC776BB2BF75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99A0F56-6C76-49CC-86EF-FC776BB2BF75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99A0F56-6C76-49CC-86EF-FC776BB2BF75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99A0F56-6C76-49CC-86EF-FC776BB2BF75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

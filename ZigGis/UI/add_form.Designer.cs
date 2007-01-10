@@ -122,9 +122,9 @@ namespace ZigGis.ArcGIS.ArcMapUI //Pulp.ArcGis.ZigGis
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Add Data";
+            this.Load += new System.EventHandler(this.AddForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

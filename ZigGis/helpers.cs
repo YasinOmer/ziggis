@@ -243,11 +243,13 @@ namespace ZigGis.Utilities
                 ISpatialFilter sQuery = query as ISpatialFilter;
                 if (sQuery != null)
                 {
+										//Paolo : removed this code (instantiaded the spatial reference at feature class constructor)
+									/*
                     int srid = -1;
-                    ISpatialReference sRef = sQuery.Geometry.SpatialReference;
+                    ISpatialReference sRef = sQuery.Geometry.SpatialReference as ISpatialReference;
                     if (sRef != null && sRef.FactoryCode != 0)
                         srid = sRef.FactoryCode;
-
+									 */
                     // Debug - just create a polygon from the envelope for now.
                     object o = System.Type.Missing;
                     IEnvelope env = sQuery.Geometry.Envelope;
@@ -261,7 +263,7 @@ namespace ZigGis.Utilities
                         sb.Append(" and ");
 
                     sb.Append("intersects(");
-                    sb.Append(aoPolygonToWkt((IPolygon)pg, true, srid));
+                    sb.Append(aoPolygonToWkt((IPolygon)pg, true, postGisLayer.srid));
                     sb.Append(",");
                     sb.Append(postGisLayer.geometryField);
                     sb.Append(")=true");

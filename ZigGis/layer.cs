@@ -71,7 +71,6 @@ namespace ZigGis.PostGis
             // table and selects the spatial reference from the spatial reference table.
             // The join must be constructed such that a record is gotten whether this
             // layer has a spatial reference or not (hence the left join).
-
             string where;
             if (loadFromOid)
                 where = "g.oid=" + oid.ToString();
@@ -92,6 +91,7 @@ namespace ZigGis.PostGis
                 m_geomFld = DbHelper.getValueAsString(dr[PostGisConstants.geometryColumnLookupField]);
                 m_geomType = DbHelper.getValueAsString(dr[PostGisConstants.geometryTypeField]);
                 m_spatialRef = DbHelper.getValueAsString(dr[PostGisConstants.spatialReferenceSrField]);
+								m_srid = (int)dr[PostGisConstants.spatialReferenceIdField];
                 if (loadFromOid)
                 {
                     m_schema = DbHelper.getValueAsString(dr[PostGisConstants.schemaField]);
@@ -104,7 +104,7 @@ namespace ZigGis.PostGis
             {
                 // Todo - throw exception.
             }
-
+					  //Initialize spatial reference
             log.leaveFunc();
         }
 
@@ -116,6 +116,9 @@ namespace ZigGis.PostGis
 
         private string m_spatialRef;
         public string spatialReference { get { return m_spatialRef; } }
+
+				private int m_srid = -1;
+				public int srid { get { return m_srid; } }
 
         public string schemaAndView
         {
