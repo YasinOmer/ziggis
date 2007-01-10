@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using ZigGis.ArcGIS.Geodatabase;
+using System.Runtime.InteropServices;
 
 #if ARCGIS_8X
 using ESRI.ArcObjects.Core;
@@ -38,20 +39,28 @@ namespace ZigGis.ArcGIS.ArcMapUI
         {
             Hide();
             owner.application.RefreshWindow();
-            
-            // Open workspace and feature class.
-            IWorkspaceFactory wksf = new PostGisWksFactory();
-            IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(zigFile.Text, 0);
-            IFeatureClass fc = fwks.OpenFeatureClass(postgisView.Text);
-
-            // Create the new layer.
-            IFeatureLayer layer = new PostGisFeatureLayer();
-            layer.FeatureClass = fc;
-            layer.Name = fc.AliasName;
-                
-            // Add the new layer.
-            IMxDocument doc = (IMxDocument)owner.application.Document;
-            doc.AddLayer(layer);
+            try
+            {
+                // Open workspace and feature class.
+                IWorkspaceFactory wksf = new PostGisWksFactory();
+                IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(zigFile.Text, 0);
+                IFeatureClass fc = fwks.OpenFeatureClass(postgisView.Text);
+                // Create the new layer.
+                IFeatureLayer layer = new PostGisFeatureLayer();
+                layer.FeatureClass = fc;
+                layer.Name = fc.AliasName;
+                // Add the new layer.
+                IMxDocument doc = (IMxDocument)owner.application.Document;
+                doc.AddLayer(layer);
+            }
+            catch (COMException COMex)
+            {
+                MessageBox.Show("Error " + COMex.ErrorCode.ToString() + ": " + COMex.Message);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
 
         private Button m_btn = null;
@@ -62,6 +71,11 @@ namespace ZigGis.ArcGIS.ArcMapUI
             m_btn = ownerButton;
             Show(new ArcMapWindowWrapper(ownerButton.application));
             Focus();
+        }
+
+        private void AddForm_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 

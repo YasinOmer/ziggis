@@ -77,7 +77,12 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         private void init()
         {
-            m_layHelper = CLayerHelperBase.createLayerHelper(postGisLayer.geometryType);
+					m_layHelper = CLayerHelperBase.createLayerHelper(postGisLayer.geometryType);
+					if (m_layer.srid != -1)
+					{
+						ISpatialReferenceFactory2 srf = new SpatialReferenceEnvironmentClass();
+						m_spaRef = srf.CreateSpatialReference(m_layer.srid); ;
+					}
         }
 
         private CLayerHelperBase m_layHelper;

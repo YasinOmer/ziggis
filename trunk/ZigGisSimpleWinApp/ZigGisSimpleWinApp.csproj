@@ -4,13 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{35096DB4-8814-41B8-86E9-9A52CF2AF033}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{D99A0F56-6C76-49CC-86EF-FC776BB2BF75}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>zigGISTester</RootNamespace>
-    <AssemblyName>zigGISTester</AssemblyName>
-    <StartupObject>
-    </StartupObject>
+    <RootNamespace>ZigGisSimpleWinApp</RootNamespace>
+    <AssemblyName>ZigGisSimpleWinApp</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,34 +36,55 @@
     <Reference Include="ESRI.ArcGIS.MapControl, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.System, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.SystemUI, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\zigGIS-02\log4net-1.2.10\bin\net\2.0\debug\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.2.9.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DummyApp.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest.cs" />
-    <Compile Include="Utilities.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Tester\Tester.csproj">
+      <Project>{35096DB4-8814-41B8-86E9-9A52CF2AF033}</Project>
+      <Name>Tester</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZigGis\ZigGis.csproj">
       <Project>{146A00F2-9032-4498-8D7B-C9017561E4E7}</Project>
       <Name>ZigGis</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="testLog.log">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
