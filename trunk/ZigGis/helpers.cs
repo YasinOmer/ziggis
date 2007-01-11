@@ -244,12 +244,10 @@ namespace ZigGis.Utilities
                 if (sQuery != null)
                 {
 										//Paolo : removed this code (instantiaded the spatial reference at feature class constructor)
-									/*
                     int srid = -1;
                     ISpatialReference sRef = sQuery.Geometry.SpatialReference as ISpatialReference;
                     if (sRef != null && sRef.FactoryCode != 0)
                         srid = sRef.FactoryCode;
-									 */
                     // Debug - just create a polygon from the envelope for now.
                     object o = System.Type.Missing;
                     IEnvelope env = sQuery.Geometry.Envelope;
