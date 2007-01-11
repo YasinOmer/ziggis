@@ -158,6 +158,7 @@ namespace ZigGis.ArcGIS.Geodatabase
                 
                 PostGisWksName wksName = new PostGisWksName(this, FileName);
                 retVal = new PostGisFeatureWks(wksName);
+			
             }
             finally
             {
@@ -402,6 +403,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             if (DatasetType == esriDatasetType.esriDTFeatureClass)
             {
                 // Todo - this should return any table registered with the geometry columns table.
+
             }
 
             return new PostGisEnumDatasetName();
@@ -459,7 +461,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             if (bits.Length > 1)
             {
                 schema = bits[0];
-                view = bits[2];
+                view = bits[1];
             }
 
             PostGisDatasetName dsName = new PostGisDatasetName();

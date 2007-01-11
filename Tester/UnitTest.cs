@@ -34,13 +34,18 @@ namespace zigGISTester
 	public class PostGisFeatureClassTester
 	{
 		IFeatureLayer layer;
+		IWorkspace ws;
 
+		/// <summary>
+		/// Initialization code
+		/// </summary>
 		[SetUp]
 		public void Init()
 		{
 			// Open workspace and feature class.
 			IWorkspaceFactory wksf = new PostGisWksFactory();
-			IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
+			ws = wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
+			IFeatureWorkspace fwks = ws as IFeatureWorkspace;
 			IFeatureClass fc = fwks.OpenFeatureClass("zone");
 			// Create the new layer (default renderer is ISimpleRenderer)
 			layer = new PostGisFeatureLayer();
@@ -48,6 +53,9 @@ namespace zigGISTester
 			layer.Name = fc.AliasName;
 		}
 
+		/// <summary>
+		/// Check if renderer is simple
+		/// </summary>
 		[Test]
 		public void RendererIsISimpleRenderer()
 		{
@@ -58,6 +66,9 @@ namespace zigGISTester
 			Assert.IsInstanceOfType(expected, fr, "test ok");
 		}
 
+		/// <summary>
+		/// Check if renderer is Unique value
+		/// </summary>
 		[Test]
 		public void RendererIsIUniqueValueRenderer()
 		{
@@ -68,6 +79,22 @@ namespace zigGISTester
 			Type expected = typeof(IUniqueValueRenderer);
 			System.Console.WriteLine(expected.ToString() + ", " + fr.GetType().ToString());
 			Assert.IsInstanceOfType(expected, fr, "test ok");
+		}
+
+		/// <summary>
+		/// Check IWorkspace Methods
+		/// </summary>
+		[Test]
+		public void CheckIWorkspaceMethods()
+		{
+			PostGisEnumDatasetName edsn = (PostGisEnumDatasetName)ws.get_DatasetNames(esriDatasetType.esriDTFeatureClass);
+			IDatasetName dsn = edsn.Next();
+			while (dsn != null)
+			{
+				System.Diagnostics.Debug.WriteLine(dsn.Name);
+				dsn = edsn.Next();
+			}
+			Assert.IsTrue(edsn != null);
 		}
 	}
 }
