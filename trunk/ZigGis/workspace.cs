@@ -158,7 +158,6 @@ namespace ZigGis.ArcGIS.Geodatabase
                 
                 PostGisWksName wksName = new PostGisWksName(this, FileName);
                 retVal = new PostGisFeatureWks(wksName);
-			
             }
             finally
             {
@@ -403,10 +402,9 @@ namespace ZigGis.ArcGIS.Geodatabase
             if (DatasetType == esriDatasetType.esriDTFeatureClass)
             {
                 // Todo - this should return any table registered with the geometry columns table.
-
             }
 
-            return new PostGisEnumDatasetName();
+            return new PostGisEnumDatasetName(connection); //Modified by Bill Dollins - 11 JAN 2007, now passes connection parameter
 
             // Todo - perhaps in the future support of tables might be nice.
         }
@@ -451,32 +449,39 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public IFeatureClass OpenFeatureClass(string Name)
         {
-            log.enterFunc("OpenFeatureClass");
-            
-            // Name should look like "view" or "schema.view".
-            // Default the schema to "public".
-            string [] bits = Name.Split('.');
-            string schema = "public";
-            string view = bits[0];
-            if (bits.Length > 1)
+            try
             {
-                schema = bits[0];
-                view = bits[1];
+                log.enterFunc("OpenFeatureClass");
+
+                // Name should look like "view" or "schema.view".
+                // Default the schema to "public".
+                string[] bits = Name.Split('.');
+                string schema = "public";
+                string view = bits[0];
+                if (bits.Length > 1)
+                {
+                    schema = bits[0];
+                    view = bits[1];
+                }
+                PostGisDatasetName dsName = new PostGisDatasetName();
+                dsName.WorkspaceName = postGisWksName;
+                dsName.Name = schema;
+
+                // Todo - ensure the schema exists.  Is it possible?
+
+                PostGisFeatureDataset featureDs = new PostGisFeatureDataset(dsName, this);
+
+                IFeatureClass retVal = new PostGisFeatureClass(featureDs, view);
+
+                log.leaveFunc();
+
+                return retVal;
             }
-
-            PostGisDatasetName dsName = new PostGisDatasetName();
-            dsName.WorkspaceName = postGisWksName;
-            dsName.Name = schema;
-
-            // Todo - ensure the schema exists.  Is it possible?
-
-            PostGisFeatureDataset featureDs = new PostGisFeatureDataset(dsName, this);
-
-            IFeatureClass retVal = new PostGisFeatureClass(featureDs, view);
-
-            log.leaveFunc();
-
-            return retVal;
+            catch (Exception ex)
+            {
+                System.Diagnostics.EventLog.WriteEntry("OpenFeatureClass", ex.ToString() + "///" + ex.StackTrace, System.Diagnostics.EventLogEntryType.Information);
+                return null;
+            }
         }
 
         // Todo - to be implemented.
@@ -679,20 +684,24 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public void StartEditOperation()
         {
+            System.Windows.Forms.MessageBox.Show("Edit operation started");
         }
 
         public void StartEditing(bool withUndoRedo)
         {
             m_beingEdited = true;
+            System.Windows.Forms.MessageBox.Show("StartEditing");
         }
 
         public void StopEditOperation()
         {
+            System.Windows.Forms.MessageBox.Show("Edit operation stopped");
         }
 
         public void StopEditing(bool saveEdits)
         {
             m_beingEdited = false;
+            System.Windows.Forms.MessageBox.Show("StopEditing");
         }
 
         public void UndoEditOperation()
@@ -929,19 +938,76 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
     }
-
+    /// <summary>
+    /// Modified by Bill Dollins: 11 JAN 2007
+    /// </summary>
     [Guid("6CAE99D6-72D5-4c2c-B7ED-9A84281E9DD2"), ClassInterface(ClassInterfaceType.None)]
     public class PostGisEnumDatasetName :
         IEnumDatasetName
     {
+        private PostGisDatasetName [] pgdsn; //array to store dataset names
+        private Connection m_conn; //connection to postgis
+        private int currentPosition = 0; //counter for enumeration
+
+        public PostGisEnumDatasetName() //parameterless constructor required for COM
+        {
+        }
+        /// <summary>
+        /// Written by Bill Dollins: 11 JAN 2007
+        /// 
+        /// This constructor accepts a connection and loads the array that will drive the enumerator
+        /// </summary>
+        /// <param name="conn"></param>
+        public PostGisEnumDatasetName(Connection conn) //constructor with connection
+        {
+            try
+            {
+                m_conn = conn; //save the connection. we save not need to do list.
+                string sql = "select count(*) from public.geometry_columns;";
+                AutoDataReader dr = conn.doQuery(sql); //get the number of layers in the database
+                dr.Read();
+                int rows = Convert.ToInt32(dr["count"]); //capture the layer count
+                dr.Close();
+                sql = "select * from public.geometry_columns order by f_table_schema, f_table_name;";
+                dr = conn.doQuery(sql); //get the records for the layers
+                if (rows > 0) //if there's data
+                {
+                    pgdsn = new PostGisDatasetName[rows]; //init the array
+                    int i = 0;
+                    while (dr.Read()) //loop the data reader
+                    {
+                        pgdsn[i] = new PostGisDatasetName(); //instantiate a new dataset name
+                        pgdsn[i].Name = dr["f_table_schema"] + "." + dr["f_table_name"]; //assign the name using the schema.view format
+                        i += 1;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //what the heck went wrong here?
+                System.Diagnostics.EventLog.WriteEntry("PostGisEnumDatasetName", ex.ToString() + "///" + ex.StackTrace, System.Diagnostics.EventLogEntryType.Error);
+            }
+        }
+
         #region IEnumDatasetName
         public IDatasetName Next()
         {
-            return null;
+            if ((pgdsn.Length > 0) && (currentPosition < pgdsn.Length))
+            {
+                int tempPos = currentPosition; //capture current position into temp variable
+                currentPosition = currentPosition + 1; //increment counter prior to return statement
+                return (IDatasetName)pgdsn[tempPos];
+            }
+            else
+            {
+                currentPosition = 0;
+                return null;
+            }
         }
 
         public void Reset()
         {
+            currentPosition = 0; //let's start over, shall we?
         }
         #endregion
     }
@@ -1194,7 +1260,8 @@ namespace ZigGis.ArcGIS.Geodatabase
         #region IDatasetEdit Members
         public bool IsBeingEdited()
         {
-            throw new Exception("The method or operation is not implemented.");
+            return true; //Bill Dollins
+            //throw new Exception("The method or operation is not implemented.");
         }
         #endregion
     }
