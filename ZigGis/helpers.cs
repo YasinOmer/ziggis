@@ -73,255 +73,271 @@ namespace ZigGis.Utilities
     // ArcObjects -> WKT
     // WKT -> ArcObjects
     // etc ...
-    public class GeomHelper
-    {
-        static private readonly CLogger log = new CLogger(typeof(GeomHelper));
-        
-        static public string aoGeomToWkt(IGeometry geometry, bool includeFromTextMarkup, int srid)
-        {
-            if (geometry is IPoint)
-                return aoPointToWkt((IPoint)geometry, includeFromTextMarkup, srid);
-            else if (geometry is IPolyline)
-                return aoPolylineToWkt((IPolyline)geometry, includeFromTextMarkup, srid);
-            else if (geometry is IPolygon)
-                return aoPolygonToWkt((IPolygon)geometry, includeFromTextMarkup, srid);
-            else
-                return "";
-        }
+	public class GeomHelper
+	{
+		static private readonly CLogger log = new CLogger(typeof(GeomHelper));
 
-        static private string xyString(double x, double y)
-        {
-            //local settings issue, OGC is always en-US culture
-            CultureInfo OGCCultureInfo = new CultureInfo("en-US");
-            StringBuilder sb = new StringBuilder(x.ToString(OGCCultureInfo));
-            sb.Append(" ");
-            sb.Append(y.ToString(OGCCultureInfo));
-            return sb.ToString();
-        }
+		static public string aoGeomToWkt(IGeometry geometry, bool includeFromTextMarkup, int srid)
+		{
+			if (geometry is IPoint)
+				return aoPointToWkt((IPoint)geometry, includeFromTextMarkup, srid);
+			else if (geometry is IPolyline)
+				return aoPolylineToWkt((IPolyline)geometry, includeFromTextMarkup, srid);
+			else if (geometry is IPolygon)
+				return aoPolygonToWkt((IPolygon)geometry, includeFromTextMarkup, srid);
+			else
+				return "";
+		}
 
-        static public string aoPointToWkt(IPoint point, bool includeFromTextMarkup, int srid)
-        {
-            StringBuilder sb;
-            if (includeFromTextMarkup)
-                sb = new StringBuilder("PointFromText('POINT(");
-            else
-                sb = new StringBuilder("POINT(");
-            sb.Append(xyString(point.X, point.Y));
-            if (includeFromTextMarkup)
-            {
-                sb.Append(")',");
-                sb.Append(srid.ToString());
-            }
-            sb.Append(")");
-            return sb.ToString();
-        }
+		static private string xyString(double x, double y)
+		{
+			//local settings issue, OGC is always en-US culture
+			CultureInfo OGCCultureInfo = new CultureInfo("en-US");
+			StringBuilder sb = new StringBuilder(x.ToString(OGCCultureInfo));
+			sb.Append(" ");
+			sb.Append(y.ToString(OGCCultureInfo));
+			return sb.ToString();
+		}
 
-        static public string aoPolylineToWkt(IPolyline polyline, bool includeFromTextMarkup, int srid)
-        {
-            StringBuilder sb = aoPolyToWtkHelper((IPointCollection)polyline, false);
+		static public string aoPointToWkt(IPoint point, bool includeFromTextMarkup, int srid)
+		{
+			StringBuilder sb;
+			if (includeFromTextMarkup)
+				sb = new StringBuilder("PointFromText('POINT(");
+			else
+				sb = new StringBuilder("POINT(");
+			sb.Append(xyString(point.X, point.Y));
+			if (includeFromTextMarkup)
+			{
+				sb.Append(")',");
+				sb.Append(srid.ToString());
+			}
+			sb.Append(")");
+			return sb.ToString();
+		}
 
-            /*
-            if (multi)
-                return (includeFromTextMarkup ? "MLineFromText('" : "") +
-                    "MULTILINESTRING(" + sb.ToString() +
-                    (includeFromTextMarkup ? "'," + srid.ToString() : "") +
-                    ")";
-            else
-            */
-                return (includeFromTextMarkup ? "LineFromText('" : "") +
-                    "LINESTRING" + sb.ToString() +
-                    (includeFromTextMarkup ? "'," + srid.ToString() : "") +
-                    ")";
-        }
+		static public string aoPolylineToWkt(IPolyline polyline, bool includeFromTextMarkup, int srid)
+		{
+			StringBuilder sb = aoPolyToWtkHelper((IPointCollection)polyline, false);
 
-        static public string aoPolygonToWkt(IPolygon polygon, bool includeFromTextMarkup, int srid)
-        {
-            StringBuilder sb = aoPolyToWtkHelper((IPointCollection)polygon, true);
+			/*
+			if (multi)
+				return (includeFromTextMarkup ? "MLineFromText('" : "") +
+					"MULTILINESTRING(" + sb.ToString() +
+					(includeFromTextMarkup ? "'," + srid.ToString() : "") +
+					")";
+			else
+			*/
+			return (includeFromTextMarkup ? "LineFromText('" : "") +
+				"LINESTRING" + sb.ToString() +
+				(includeFromTextMarkup ? "'," + srid.ToString() : "") +
+				")";
+		}
 
-            /*
-            if (multi)
-                return (includeFromTextMarkup ? "MPolyFromText('" : "") +
-                    "MULTIPOLYGON(" + sb.ToString() +
-                    (includeFromTextMarkup ? "'," + srid.ToString() : "") +
-                    ")";
-            else
-            */
-                return (includeFromTextMarkup ? "PolyFromText('" : "") +
-                    "POLYGON" + sb.ToString() +
-                    (includeFromTextMarkup ? "'," + srid.ToString() : "") +
-                    ")";
-        }
+		static public string aoPolygonToWkt(IPolygon polygon, bool includeFromTextMarkup, int srid)
+		{
+			StringBuilder sb = aoPolyToWtkHelper((IPointCollection)polygon, true);
 
-        static private StringBuilder aoPolyToWtkHelper(IPointCollection points, bool isPolygon)
-        {
-            IEnumVertex vertices = points.EnumVertices;
-            StringBuilder sbMain = new StringBuilder("(");
+			/*
+			if (multi)
+				return (includeFromTextMarkup ? "MPolyFromText('" : "") +
+					"MULTIPOLYGON(" + sb.ToString() +
+					(includeFromTextMarkup ? "'," + srid.ToString() : "") +
+					")";
+			else
+			*/
+			return (includeFromTextMarkup ? "PolyFromText('" : "") +
+				"POLYGON" + sb.ToString() +
+				(includeFromTextMarkup ? "'," + srid.ToString() : "") +
+				")";
+		}
 
-            IPoint p;
-            IPoint firstInPart = new PointClass();
-            int pIdx;
-            int vIdx;
-            int pIdxCurr = 0;  // The current part index.
-            StringBuilder sbPart = new StringBuilder();
-            while ((p = nextPoint(vertices, out pIdx, out vIdx)) != null)
-            {
-                // Have we gotten a new part?
-                // If so, close it out.
-                if (pIdx != pIdxCurr)
-                {
-                    // We need to close this ring if it's a polygon.
-                    if (isPolygon)
-                    {
-                        aoPolyToWktAddPoint(sbPart, firstInPart);
-                        replaceLastChar(sbPart, ')');
-                    }
+		static private StringBuilder aoPolyToWtkHelper(IPointCollection points, bool isPolygon)
+		{
+			IEnumVertex vertices = points.EnumVertices;
+			StringBuilder sbMain = new StringBuilder("(");
 
-                    aoPolyToWktAddPart(sbMain, sbPart);
-                    sbMain.Append(",");
-                    sbPart = new StringBuilder();
-                    pIdxCurr = pIdx;
-                }
-                
-                aoPolyToWktAddPoint(sbPart, p);
-                
-                // Save the first point in each part to later close polygons.
-                if (vIdx == 0)
-                    firstInPart.PutCoords(p.X, p.Y);
-            }
+			IPoint p;
+			IPoint firstInPart = new PointClass();
+			int pIdx;
+			int vIdx;
+			int pIdxCurr = 0;  // The current part index.
+			StringBuilder sbPart = new StringBuilder();
+			while ((p = nextPoint(vertices, out pIdx, out vIdx)) != null)
+			{
+				// Have we gotten a new part?
+				// If so, close it out.
+				if (pIdx != pIdxCurr)
+				{
+					// We need to close this ring if it's a polygon.
+					if (isPolygon)
+					{
+						aoPolyToWktAddPoint(sbPart, firstInPart);
+						replaceLastChar(sbPart, ')');
+					}
 
-            // Close the last part of a polygon.
-            if (isPolygon)
-                aoPolyToWktAddPoint(sbPart, firstInPart);
-            aoPolyToWktAddPart(sbMain, sbPart);
+					aoPolyToWktAddPart(sbMain, sbPart);
+					sbMain.Append(",");
+					sbPart = new StringBuilder();
+					pIdxCurr = pIdx;
+				}
 
-            sbMain.Append(")");
+				aoPolyToWktAddPoint(sbPart, p);
 
-            return sbMain;
-        }
+				// Save the first point in each part to later close polygons.
+				if (vIdx == 0)
+					firstInPart.PutCoords(p.X, p.Y);
+			}
 
-        static private void aoPolyToWktAddPoint(StringBuilder part, IPoint pointToAdd)
-        {
-            part.Append(xyString(pointToAdd.X, pointToAdd.Y));
-            part.Append(",");
-        }
+			// Close the last part of a polygon.
+			if (isPolygon)
+				aoPolyToWktAddPoint(sbPart, firstInPart);
+			aoPolyToWktAddPart(sbMain, sbPart);
 
-        static private void aoPolyToWktAddPart(StringBuilder multipart, StringBuilder partToAdd)
-        {
-            replaceLastChar(partToAdd, ')');
-            multipart.Append("(");
-            multipart.Append(partToAdd.ToString());
-        }
+			sbMain.Append(")");
 
-        static private void replaceLastChar(StringBuilder stringBuilder, char c)
-        {
-            stringBuilder[stringBuilder.Length - 1] = c;
-        }
+			return sbMain;
+		}
 
-        static private IPoint nextPoint(IEnumVertex vertices, out int partIndex, out int vertexIndex)
-        {
-            IPoint p;
-            vertices.Next(out p, out partIndex, out vertexIndex);
-            return p;
-        }
+		static private void aoPolyToWktAddPoint(StringBuilder part, IPoint pointToAdd)
+		{
+			part.Append(xyString(pointToAdd.X, pointToAdd.Y));
+			part.Append(",");
+		}
 
-        static public void aoQryToPostGisQry(IQueryFilter query, Layer postGisLayer, out string fields, out string where)
-        {
-            log.enterFunc("aoQryToPostGisQry");
-            if (log.IsDebugEnabled) log.Debug(Helper.objectToString(query) + "," + Helper.objectToString(postGisLayer));
-            
-            // Todo - must use the IQueryFilter::OutputSpatialReference
-            // to project the resulting geometries.
+		static private void aoPolyToWktAddPart(StringBuilder multipart, StringBuilder partToAdd)
+		{
+			replaceLastChar(partToAdd, ')');
+			multipart.Append("(");
+			multipart.Append(partToAdd.ToString());
+		}
 
-            try
-            {
-                // Get the SQL stuff.
-                fields = query.SubFields;
-                aoFieldsToPostGisFields(ref fields, postGisLayer);
-                StringBuilder sb = new StringBuilder(query.WhereClause);
+		static private void replaceLastChar(StringBuilder stringBuilder, char c)
+		{
+			stringBuilder[stringBuilder.Length - 1] = c;
+		}
 
-                // Add the spatial stuff.
-                ISpatialFilter sQuery = query as ISpatialFilter;
-                if (sQuery != null)
-                {
-										//Paolo : removed this code (instantiaded the spatial reference at feature class constructor)
-                    int srid = -1;
-                    ISpatialReference sRef = sQuery.Geometry.SpatialReference as ISpatialReference;
-                    if (sRef != null && sRef.FactoryCode != 0)
-                        srid = sRef.FactoryCode;
-                    // Debug - just create a polygon from the envelope for now.
-                    object o = System.Type.Missing;
-                    IEnvelope env = sQuery.Geometry.Envelope;
-                    IPointCollection pg = (IPointCollection)(new PolygonClass());
-                    pg.AddPoint(env.LowerLeft, ref o, ref o);
-                    pg.AddPoint(env.LowerRight, ref o, ref o);
-                    pg.AddPoint(env.UpperRight, ref o, ref o);
-                    pg.AddPoint(env.UpperLeft, ref o, ref o);
+		static private IPoint nextPoint(IEnumVertex vertices, out int partIndex, out int vertexIndex)
+		{
+			IPoint p;
+			vertices.Next(out p, out partIndex, out vertexIndex);
+			return p;
+		}
 
-                    if (sb.Length > 0)
-                        sb.Append(" and ");
+		static public void aoQryToPostGisQry(IQueryFilter query, Layer postGisLayer, out string fields, out string where)
+		{
+			log.enterFunc("aoQryToPostGisQry");
+			if (log.IsDebugEnabled) log.Debug(Helper.objectToString(query) + "," + Helper.objectToString(postGisLayer));
 
-                    sb.Append("intersects(");
-                    sb.Append(aoPolygonToWkt((IPolygon)pg, true, postGisLayer.srid));
-                    sb.Append(",");
-                    sb.Append(postGisLayer.geometryField);
-                    sb.Append(")=true");
-                }
-                where = sb.ToString();
+			// Todo - must use the IQueryFilter::OutputSpatialReference
+			// to project the resulting geometries.
+			fields = "";
+			where = "";
 
-                if (log.IsDebugEnabled)
-                {
-                    log.Debug(fields);
-                    log.Debug(where);
-                }
-            }
-            finally
-            {
-                log.leaveFunc();
-            }
-        }
+			try
+			{
+				// Get the SQL stuff.
+				fields = query.SubFields;
 
-        static public void aoFieldsToPostGisFields(ref string fields, Layer postGisLayer)
-        {
-            // We want to load every field so we can easily
-            // interoperate with the rest of the framework.
-            // However, load nulls for the fields that aren't specified.
+				// Add the spatial stuff.
+				ISpatialFilter sQuery = query as ISpatialFilter;
+				//Paolo: FactoryCode=0 for srid=-1
+				int outSrid = sQuery.Geometry.SpatialReference.FactoryCode;
+				if (outSrid == 0)
+				{
+					outSrid = -1;
+				}
+				aoFieldsToPostGisFields(ref fields, postGisLayer, outSrid);
+				StringBuilder sb = new StringBuilder(query.WhereClause);
+				if (sQuery != null)
+				{
+					int srid = -1;
+					int layerSrid = postGisLayer.srid;
+					ISpatialReference sRef = sQuery.Geometry.SpatialReference;
+					if (sRef != null && sRef.FactoryCode != 0)
+						srid = sRef.FactoryCode;
+					// Debug - just create a polygon from the envelope for now.
+					object o = System.Type.Missing;
+					IEnvelope env = sQuery.Geometry.Envelope;
+					IPointCollection pg = (IPointCollection)(new PolygonClass());
+					pg.AddPoint(env.LowerLeft, ref o, ref o);
+					pg.AddPoint(env.LowerRight, ref o, ref o);
+					pg.AddPoint(env.UpperRight, ref o, ref o);
+					pg.AddPoint(env.UpperLeft, ref o, ref o);
 
-            bool loadAll = (fields == "*");
+					if (sb.Length > 0)
+						sb.Append(" and ");
 
-            string [] fieldArray = fields.Split(',');
-            Hashtable fieldMap = new Hashtable(fieldArray.Length);
-            foreach (string f in fieldArray)
-                fieldMap.Add(f.ToLower(), true);  // Use a dummy value.
+					sb.Append("intersects(transform(");
+					sb.Append(aoPolygonToWkt((IPolygon)pg, true, srid));
+					sb.Append("," + srid.ToString() + "),");
+					sb.Append("transform(" + postGisLayer.geometryField + "," + srid.ToString() + ")");
+					sb.Append(")=true");
+				}
+				where = sb.ToString();
+				System.Diagnostics.EventLog.WriteEntry("GeomHelper.aoQryToPostGisQry", where, System.Diagnostics.EventLogEntryType.Information);
 
-            string name;
-            bool load;
-            StringBuilder sb = new StringBuilder();
-            DataTable dataFields = postGisLayer.getDataFields(false);
-            foreach (DataRow r in dataFields.Rows)
-            {
-                name = ((string)r["ColumnName"]).ToLower();
+				if (log.IsDebugEnabled)
+				{
+					log.Debug(fields);
+					log.Debug(where);
+				}
+			}
+			catch (Exception ex)
+			{
+				log.Debug("GeomHelper.aoQryToPostGisQry", ex);
+			}
+			finally
+			{
+				log.leaveFunc();
+			}
+		}
 
-                // Are we loading the data?
-                // (if the field is found in the Hashtable
-                // then the field was supplied to this
-                // function, therefore we load its data)
-                // We also load if we are loading all.
-                load = (fieldMap[name] != null || loadAll);
+		static public void aoFieldsToPostGisFields(ref string fields, Layer postGisLayer, int outSrid)
+		{
+			// We want to load every field so we can easily
+			// interoperate with the rest of the framework.
+			// However, load nulls for the fields that aren't specified.
+			log.enterFunc("aoFieldsToPostGisFields");
+			bool loadAll = (fields == "*");
+			log.Debug("outSrid = " + outSrid.ToString());
 
-                // Geometry fields are special - add the asbinary() func.
-                // Plus, we *always* load the geometry data.
-                if (name == postGisLayer.geometryField)
-                    name = postGisLayer.geometryFieldAsBinary + " as " + name;
-                else if (!load)
-                    sb.Append("null as ");
-                
-                sb.Append(name);
-                sb.Append(",");
-            }
-            sb.Remove(sb.Length - 1, 1);
-            fields = sb.ToString();
-        }
-    }
+			string[] fieldArray = fields.Split(',');
+			Hashtable fieldMap = new Hashtable(fieldArray.Length);
+			foreach (string f in fieldArray)
+				fieldMap.Add(f.ToLower(), true);  // Use a dummy value.
+
+			string name;
+			bool load;
+			StringBuilder sb = new StringBuilder();
+			DataTable dataFields = postGisLayer.getDataFields(false);
+			foreach (DataRow r in dataFields.Rows)
+			{
+				name = ((string)r["ColumnName"]).ToLower();
+
+				// Are we loading the data?
+				// (if the field is found in the Hashtable
+				// then the field was supplied to this
+				// function, therefore we load its data)
+				// We also load if we are loading all.
+				load = (fieldMap[name] != null || loadAll);
+
+				// Geometry fields are special - add the asbinary() func.
+				// Plus, we *always* load the geometry data.
+				// DONE: apply correct coordinate transformation here
+				if (name == postGisLayer.geometryField)
+					name = postGisLayer.transformGeometryFieldAsBinary(outSrid) + " as " + name;
+				else if (!load)
+					sb.Append("null as ");
+
+				sb.Append(name);
+				sb.Append(",");
+			}
+			sb.Remove(sb.Length - 1, 1);
+			fields = sb.ToString();
+			log.leaveFunc();
+		}
+	}
 
     enum BitConversion { toLittle, toBig, none };
 

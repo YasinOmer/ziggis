@@ -1002,10 +1002,9 @@ namespace ZigGis.ArcGIS.Geodatabase
             get { throw new Exception("The method or operation is not implemented."); }
         }
         #endregion
-    }
-    /// <summary>
-    /// Modified by Bill Dollins: 11 JAN 2007
-    /// </summary>
+	}
+	#region IEnumDatasetName
+	
 	/// <summary>
 	/// PostGisEnumDatasetName class
 	/// Bill Dollins, Paolo Corti (january 2007)
@@ -1016,17 +1015,19 @@ namespace ZigGis.ArcGIS.Geodatabase
     {
         private PostGisDatasetName [] pgdsn; //array to store dataset names
         private Connection m_conn; //connection to postgis
-        private int currentPosition = 0; //counter for enumeration
+        private int layerIndex = 0; //counter for enumeration
+		private int layerCount; //layer counter
 
-        public PostGisEnumDatasetName() //parameterless constructor required for COM
+		/// <summary>
+		/// parameterless constructor required for COM
+		/// </summary>
+        public PostGisEnumDatasetName()
         {
         }
         /// <summary>
-        /// Written by Bill Dollins: 11 JAN 2007
-        /// 
         /// This constructor accepts a connection and loads the array that will drive the enumerator
         /// </summary>
-        /// <param name="conn"></param>
+        /// <param name="conn">connection</param>
         public PostGisEnumDatasetName(Connection conn) //constructor with connection
         {
             try
@@ -1035,13 +1036,13 @@ namespace ZigGis.ArcGIS.Geodatabase
                 string sql = "select count(*) from public.geometry_columns;";
                 AutoDataReader dr = conn.doQuery(sql); //get the number of layers in the database
                 dr.Read();
-                int rows = Convert.ToInt32(dr["count"]); //capture the layer count
+               layerCount = Convert.ToInt32(dr["count"]); //capture the layer count
                 dr.Close();
                 sql = "select * from public.geometry_columns order by f_table_schema, f_table_name;";
                 dr = conn.doQuery(sql); //get the records for the layers
-                if (rows > 0) //if there's data
+                if (layerCount > 0) //if there's data
                 {
-                    pgdsn = new PostGisDatasetName[rows]; //init the array
+                    pgdsn = new PostGisDatasetName[layerCount]; //init the array
                     int i = 0;
                     while (dr.Read()) //loop the data reader
                     {
@@ -1056,57 +1057,12 @@ namespace ZigGis.ArcGIS.Geodatabase
                 //what the heck went wrong here?
                 System.Diagnostics.EventLog.WriteEntry("PostGisEnumDatasetName", ex.ToString() + "///" + ex.StackTrace, System.Diagnostics.EventLogEntryType.Error);
             }
-        }
-
-        #region IEnumDatasetName
-
-		int layerCount;
-		private int layerIndex = -1;
-		private PostGisDatasetName [] m_PostGisDatasetNames; //array to store dataset names
+        }		
 
 		/// <summary>
-		/// Parameterless constructor required for COM
+		/// Go to next IDatasetName
 		/// </summary>
-		public PostGisEnumDatasetName()
-		{
-		}
-
-		/// <summary>
-		/// This constructor accepts a connection and loads the array that will drive the enumerator
-		/// </summary>
-		/// <param name="conn">connection for getting layer PostGisDatasetName</param>
-		public PostGisEnumDatasetName(Connection conn)
-		{
-			try
-			{
-				//get number of layers in the database
-				string sql = "select count(*) from geometry_columns;";
-				AutoDataReader dr = conn.doQuery(sql);
-				dr.Read();
-				layerCount = Convert.ToInt32(dr["count"]); //record count from PostGIS geometry_columns table
-				dr.Close();
-				if (layerCount > 0) //if there are layers
-				{
-					sql = "select * from geometry_columns order by f_table_schema, f_table_name;";
-					dr = conn.doQuery(sql); //get the records for the layers
-					m_PostGisDatasetNames = new PostGisDatasetName[layerCount]; //init the array
-					int i = 0;
-					while (dr.Read()) //loop the data reader
-					{
-						m_PostGisDatasetNames[i] = new PostGisDatasetName(); //instantiate a new dataset name
-						m_PostGisDatasetNames[i].Name = dr["f_table_schema"] + "." + dr["f_table_name"]; //name based on the schema.view format
-						i++;
-					}
-					dr.Close();
-				}
-			}
-			catch (Exception ex)
-			{
-				//should we log also with log4net and centralize these exceptions?
-				System.Diagnostics.EventLog.WriteEntry("PostGisEnumDatasetName", ex.ToString() + "///" + ex.StackTrace, System.Diagnostics.EventLogEntryType.Error);
-			}
-		}
-
+		/// <returns></returns>
         public IDatasetName Next()
         {
 			layerIndex = layerIndex + 1;
@@ -1116,10 +1072,13 @@ namespace ZigGis.ArcGIS.Geodatabase
 			}
 			else
 			{
-				return m_PostGisDatasetNames[layerIndex] as IDatasetName;
+				return pgdsn[layerIndex] as IDatasetName;
 			}
         }
 
+		/// <summary>
+		/// Reset EnumDatasetName
+		/// </summary>
         public void Reset()
         {
 			layerIndex = -1;

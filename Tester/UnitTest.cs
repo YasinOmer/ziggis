@@ -44,7 +44,20 @@ namespace zigGISTester
 		{
 			// Open workspace and feature class.
 			IWorkspaceFactory wksf = new PostGisWksFactory();
-			ws = wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
+			
+			//Open from zigFile
+			//ws = wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
+			
+			//Open from PropertySet
+			IPropertySet ps = new PropertySetClass();
+			ps.SetProperty("server", "localhost");
+			ps.SetProperty("database", "TUTORIAL");
+			ps.SetProperty("user", "psqluser");
+			ps.SetProperty("password", "psqluser");
+			ps.SetProperty("port", "5432");
+			ps.SetProperty("configfile", @"C:\ziggis\ZigGis\logging.config");
+			ws = wksf.Open(ps, 0);
+			
 			IFeatureWorkspace fwks = ws as IFeatureWorkspace;
 			IFeatureClass fc = fwks.OpenFeatureClass("zone");
 			// Create the new layer (default renderer is ISimpleRenderer)
@@ -87,14 +100,26 @@ namespace zigGISTester
 		[Test]
 		public void CheckIWorkspaceMethods()
 		{
-			PostGisEnumDatasetName edsn = (PostGisEnumDatasetName)ws.get_DatasetNames(esriDatasetType.esriDTFeatureClass);
-			IDatasetName dsn = edsn.Next();
-			while (dsn != null)
-			{
-				System.Diagnostics.Debug.WriteLine(dsn.Name);
-				dsn = edsn.Next();
-			}
+			IEnumDatasetName edsn = ws.get_DatasetNames(esriDatasetType.esriDTFeatureClass);
 			Assert.IsTrue(edsn != null);
+			IDatasetName dsn;
+			//test IEnumDatasetName.Next
+			int layerCount = 0;
+			while ((dsn = edsn.Next()) != null)
+			{
+				Assert.IsNotNull(dsn);
+				layerCount += 1;
+				System.Diagnostics.Debug.WriteLine(dsn.Name);
+				System.Diagnostics.Debug.WriteLine(dsn.Category);
+				System.Diagnostics.Debug.WriteLine(dsn.Type);
+			}
+			//test IEnumDatasetName.Reset
+			edsn.Reset();
+			for (int i = 0; i < layerCount; i++)
+			{
+				dsn = edsn.Next();
+				Assert.IsNotNull(dsn);
+			}
 		}
 	}
 }
