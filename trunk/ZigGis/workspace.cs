@@ -109,7 +109,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public IWorkspaceName Create(string parentDirectory, string Name, IPropertySet ConnectionProperties, int hWnd)
         {
-            return new PostGisWksName(this, Name);
+            return new PostGisWksName(this, m_config);
         }
 
         public UID GetClassID()
@@ -132,11 +132,48 @@ namespace ZigGis.ArcGIS.Geodatabase
             return false;
         }
 
+		/// <summary>
+		/// Open a PostGIS workspace from ConnectionProperties
+		/// Paolo Corti, january 2007
+		/// </summary>
+		/// <param name="ConnectionProperties"></param>
+		/// <param name="hWnd"></param>
+		/// <returns></returns>
         public IWorkspace Open(IPropertySet ConnectionProperties, int hWnd)
         {
-            return null;
+			IWorkspace retVal = null;
+			try
+			{
+				m_config = new Config(ConnectionProperties);
+				// immediately setup logging.
+				if (config.loggingConfigInfo != null)
+					log4net.Config.XmlConfigurator.Configure(config.loggingConfigInfo);
+
+				// Log stuff.
+				log.enterFunc("OpenFromConnectionProperties");
+				if (log.IsDebugEnabled)
+				{
+					log.Debug("Logging now setup.");
+					log.Debug(hWnd.ToString());
+				}
+
+				PostGisWksName wksName = new PostGisWksName(this, config);
+				retVal = new PostGisFeatureWks(wksName);
+			
+			}
+			finally
+			{
+				log.leaveFunc();
+			}
+			return retVal;
         }
 
+		/// <summary>
+		/// Open a PostGIS workspace from a zig file
+		/// </summary>
+		/// <param name="FileName"></param>
+		/// <param name="hWnd"></param>
+		/// <returns></returns>
         public IWorkspace OpenFromFile(string FileName, int hWnd)
         {            
             IWorkspace retVal = null;
@@ -144,7 +181,9 @@ namespace ZigGis.ArcGIS.Geodatabase
             {
                 // Grab the configuration and immediately setup logging.
                 FileInfo fi = new FileInfo(FileName);
-                m_config = new Config(fi);
+                //Abe
+				//m_config = new Config(fi);
+				m_config = new Config(fi);
                 if (config.loggingConfigInfo != null)
                     log4net.Config.XmlConfigurator.Configure(config.loggingConfigInfo);
 
@@ -156,7 +195,7 @@ namespace ZigGis.ArcGIS.Geodatabase
                     log.Debug(FileName + "," + hWnd.ToString());
                 }
                 
-                PostGisWksName wksName = new PostGisWksName(this, FileName);
+                PostGisWksName wksName = new PostGisWksName(this, config);
                 retVal = new PostGisFeatureWks(wksName);
             }
             finally
@@ -166,8 +205,13 @@ namespace ZigGis.ArcGIS.Geodatabase
             return retVal;
         }
 
+		/*
         private Config m_config = null;
         internal Config config { get { return m_config; } }
+		*/
+
+		private Config m_config = null;
+		internal Config config { get { return m_config; } }
 
         public IPropertySet ReadConnectionPropertiesFromFile(string FileName)
         {
@@ -194,13 +238,33 @@ namespace ZigGis.ArcGIS.Geodatabase
         internal PostGisWksName()
         {
         }
-        
+
+		/// <summary>
+		/// PostGisWksName constructor from Config (both for zig file and PropertySet)
+		/// Paolo Corti, january 2007
+		/// </summary>
+		/// <param name="postGisWksFactory"></param>
+		/// <param name="connectionProperties"></param>
+		public PostGisWksName(PostGisWksFactory postGisWksFactory, Config conf)
+		{
+			m_factory = postGisWksFactory;
+			//loadConfig(zigFileName);
+			m_cfg = conf;
+		}
+
+		/*
+		 * old constructor from Abe
+		/// <summary>
+		/// PostGisWksName constructor from zigFile
+		/// </summary>
+		/// <param name="postGisWksFactory"></param>
+		/// <param name="zigFileName"></param>
         public PostGisWksName(PostGisWksFactory postGisWksFactory, string zigFileName)
         {
             m_factory = postGisWksFactory;
-
             loadConfig(zigFileName);
         }
+		*/
 
         private void loadConfig(string filePath)
         {
@@ -209,8 +273,8 @@ namespace ZigGis.ArcGIS.Geodatabase
             m_cfg = new Config(fileInfo);
         }
 
-        private Config m_cfg;
-        internal Config config { get { return m_cfg; } }
+		private Config m_cfg;
+		internal Config config { get { return m_cfg; } }
 
         #region IWorkspaceName
         private string m_browseName = "PostGIS Data";
@@ -232,7 +296,8 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public string PathName
         {
-            get { return config.fileInfo.FullName; }
+            //get { return config2.fileInfo.FullName; }
+			get { return null; }
             set { throw new NotImplementedException(); }
         }
 
@@ -306,7 +371,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             StreamHelper helper = new StreamHelper(pstm);
 
             // Save the path to the zig file.
-            helper.writeString(config.fileInfo.FullName);
+            //helper.writeString(config2.fileInfo.FullName);
         }
         #endregion
     }
@@ -404,7 +469,7 @@ namespace ZigGis.ArcGIS.Geodatabase
                 // Todo - this should return any table registered with the geometry columns table.
             }
 
-            return new PostGisEnumDatasetName(connection); //Modified by Bill Dollins - 11 JAN 2007, now passes connection parameter
+            return new PostGisEnumDatasetName(connection);
 
             // Todo - perhaps in the future support of tables might be nice.
         }
@@ -941,6 +1006,10 @@ namespace ZigGis.ArcGIS.Geodatabase
     /// <summary>
     /// Modified by Bill Dollins: 11 JAN 2007
     /// </summary>
+	/// <summary>
+	/// PostGisEnumDatasetName class
+	/// Bill Dollins, Paolo Corti (january 2007)
+	/// </summary>
     [Guid("6CAE99D6-72D5-4c2c-B7ED-9A84281E9DD2"), ClassInterface(ClassInterfaceType.None)]
     public class PostGisEnumDatasetName :
         IEnumDatasetName
@@ -990,24 +1059,70 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
 
         #region IEnumDatasetName
+
+		int layerCount;
+		private int layerIndex = -1;
+		private PostGisDatasetName [] m_PostGisDatasetNames; //array to store dataset names
+
+		/// <summary>
+		/// Parameterless constructor required for COM
+		/// </summary>
+		public PostGisEnumDatasetName()
+		{
+		}
+
+		/// <summary>
+		/// This constructor accepts a connection and loads the array that will drive the enumerator
+		/// </summary>
+		/// <param name="conn">connection for getting layer PostGisDatasetName</param>
+		public PostGisEnumDatasetName(Connection conn)
+		{
+			try
+			{
+				//get number of layers in the database
+				string sql = "select count(*) from geometry_columns;";
+				AutoDataReader dr = conn.doQuery(sql);
+				dr.Read();
+				layerCount = Convert.ToInt32(dr["count"]); //record count from PostGIS geometry_columns table
+				dr.Close();
+				if (layerCount > 0) //if there are layers
+				{
+					sql = "select * from geometry_columns order by f_table_schema, f_table_name;";
+					dr = conn.doQuery(sql); //get the records for the layers
+					m_PostGisDatasetNames = new PostGisDatasetName[layerCount]; //init the array
+					int i = 0;
+					while (dr.Read()) //loop the data reader
+					{
+						m_PostGisDatasetNames[i] = new PostGisDatasetName(); //instantiate a new dataset name
+						m_PostGisDatasetNames[i].Name = dr["f_table_schema"] + "." + dr["f_table_name"]; //name based on the schema.view format
+						i++;
+					}
+					dr.Close();
+				}
+			}
+			catch (Exception ex)
+			{
+				//should we log also with log4net and centralize these exceptions?
+				System.Diagnostics.EventLog.WriteEntry("PostGisEnumDatasetName", ex.ToString() + "///" + ex.StackTrace, System.Diagnostics.EventLogEntryType.Error);
+			}
+		}
+
         public IDatasetName Next()
         {
-            if ((pgdsn.Length > 0) && (currentPosition < pgdsn.Length))
-            {
-                int tempPos = currentPosition; //capture current position into temp variable
-                currentPosition = currentPosition + 1; //increment counter prior to return statement
-                return (IDatasetName)pgdsn[tempPos];
-            }
-            else
-            {
-                currentPosition = 0;
-                return null;
-            }
+			layerIndex = layerIndex + 1;
+			if (layerIndex >= layerCount)
+			{
+				return null;
+			}
+			else
+			{
+				return m_PostGisDatasetNames[layerIndex] as IDatasetName;
+			}
         }
 
         public void Reset()
         {
-            currentPosition = 0; //let's start over, shall we?
+			layerIndex = -1;
         }
         #endregion
     }
@@ -1122,6 +1237,11 @@ namespace ZigGis.ArcGIS.Geodatabase
         IEnumDataset
     {
         #region IEnumDataset
+
+		public PostGisEnumDataset()
+		{
+			//add 
+		}
         public IDataset Next()
         {
             return null;
@@ -1266,6 +1386,124 @@ namespace ZigGis.ArcGIS.Geodatabase
         #endregion
     }
 
+	/// <summary>
+	/// Config
+	/// Paolo Corti, February 2007
+	/// </summary>
+	public class Config
+	{
+		/// <summary>
+		/// Constructor from PropertySet (in the SDEWorkspace fashion)
+		/// </summary>
+		/// <param name="propertySet"></param>
+		public Config(IPropertySet propertySet)
+		{
+			m_ps = propertySet;
+			//generate connection string
+		    addConnectionItem("server", m_ps.GetProperty("server").ToString());
+			addConnectionItem("database", m_ps.GetProperty("database").ToString());
+			addConnectionItem("user", m_ps.GetProperty("user").ToString());
+			addConnectionItem("password", m_ps.GetProperty("password").ToString());
+			addConnectionItem("port", m_ps.GetProperty("port").ToString());
+			//if configfile is passed set the log setting
+			try //manage COM except if property is missing
+			{
+				object configFileProp = m_ps.GetProperty("configfile");
+				if (configFileProp != null)
+				{
+					string path = configFileProp.ToString();
+					setLoggingSettings(path);
+				}
+			}
+			catch(SystemException e)
+			{
+				System.Diagnostics.Debug.WriteLine("configfile property not set");
+			}
+		}
+
+		/// <summary>
+		/// Constructor from zig file
+		/// </summary>
+		/// <param name="filePath">zigGIS file</param>
+		public Config(FileInfo filePath)
+        {
+            // Todo - throw exception on file DNE.
+            IConfigSource m_iniCfgSrc = new IniConfigSource(filePath.FullName);
+			// Load the connection settings.
+			IConfig configConn = m_iniCfgSrc.Configs["connection"];
+            //loadPropertySet;
+			m_ps = new PropertySetClass();
+			m_conStr = "";
+			string[] keys = configConn.GetKeys();
+			foreach (string key in keys)
+			{
+				string value = configConn.GetString(key);
+				//load PropertySet
+				m_ps.SetProperty(key, value);
+				//generate connection string
+				addConnectionItem(key, value);
+			}
+			// Load the logging settings.
+			IConfig configLog = m_iniCfgSrc.Configs["logging"];
+			if (configLog != null)
+			{
+				string path = configLog.GetString("configfile");
+				setLoggingSettings(path);
+			}
+        }
+
+		/// <summary>
+		/// Build a connection string from zig file parameters or PropertySet
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="value"></param>
+		private void addConnectionItem(string item, string value)
+		{
+			connectionPropertySet.SetProperty(item, value);
+			m_conStr += item + "=" + value + ";";
+		}
+
+		/// <summary>
+		/// Set a log file for logging
+		/// </summary>
+		/// <param name="path">path to logfile (from zig file or PropertySet)</param>
+		private void setLoggingSettings(string path)
+		{
+			if (File.Exists(path))
+			{
+				m_logConfigFi = new FileInfo(path);
+			}
+		}
+
+		/// <summary>
+		/// connectionPropertySet
+		/// PropertySet for accessing/storing connection parameters of OGC Workspace
+		/// </summary>
+		private IPropertySet m_ps;
+		// Todo - add a setter.
+		public IPropertySet connectionPropertySet { get { return m_ps; } }
+
+		/// <summary>
+		/// connectionString
+		/// Connection string for accessing OGC RDBMS (PostGIS)
+		/// </summary>
+		private string m_conStr;
+		public string connectionString { get { return m_conStr; } }
+
+		/// <summary>
+		/// loggingConfigInfo
+		/// FileInfo for logging, if not configured may be null and logging is not performed
+		/// </summary>
+		private FileInfo m_logConfigFi;
+
+		public FileInfo loggingConfigInfo { get { return m_logConfigFi; } }
+	}
+
+	/*
+	 * 
+	/// <summary>
+	/// Old Config class from Abe
+	/// </summary>
     public class Config :
         IConfigSource
     {
@@ -1274,7 +1512,6 @@ namespace ZigGis.ArcGIS.Geodatabase
             // Todo - throw exception on file DNE.
             m_path = filePath;
             m_iniCfgSrc = new IniConfigSource(filePath.FullName);
-
             loadPropertySet();
         }
 
@@ -1380,4 +1617,5 @@ namespace ZigGis.ArcGIS.Geodatabase
         public event EventHandler Saved;
         #endregion
     }
+	 * */
 }
