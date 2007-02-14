@@ -197,6 +197,12 @@ namespace ZigGis.PostGis
 
         public string geometryFieldAsBinary { get { return "asbinary(" + geometryField + ")"; } }
 
+		//Bill Dollins: Added to support transform
+		public string transformGeometryFieldAsBinary(int toSrid)
+		{
+			return "asbinary(transform(" + geometryField + "," + toSrid.ToString() + "))";
+		}
+
         public string geometryBinaryName { get { return geometryField + "_asbinary"; } }
     }
 }

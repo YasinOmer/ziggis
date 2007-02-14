@@ -18,6 +18,9 @@ namespace ZigGis.ArcGIS.ArcMapUI
 {
     public partial class AddForm : Form
     {
+		private IWorkspaceFactory wksf;
+		private IFeatureWorkspace fwks;
+
         public AddForm()
         {
             InitializeComponent();
@@ -26,8 +29,35 @@ namespace ZigGis.ArcGIS.ArcMapUI
         private void openFile_Click(object sender, EventArgs e)
         {
             DialogResult res = openFileDlg.ShowDialog(this);
-            if (res == DialogResult.OK)
-                zigFile.Text = openFileDlg.FileName;
+			if (res == DialogResult.OK)
+			{
+				try
+				{
+					zigFile.Text = openFileDlg.FileName;
+					// Open workspace
+					wksf = new PostGisWksFactory();
+					fwks = (IFeatureWorkspace)wksf.OpenFromFile(zigFile.Text, 0);
+					// Open workspace
+					IWorkspace ws = fwks as IWorkspace;
+					// Show workspace PostGIS layer
+					IEnumDatasetName edsn = ws.get_DatasetNames(esriDatasetType.esriDTFeatureClass);
+					IDatasetName dsn;
+					// Load PostGIS layer names
+					clbLayers.Items.Clear();
+					while ((dsn = edsn.Next()) != null)
+					{
+						clbLayers.Items.Add(dsn.Name);
+					}
+				}
+				catch (COMException COMex)
+				{
+					MessageBox.Show("Error " + COMex.ErrorCode.ToString() + ": " + COMex.Message);
+				}
+				catch (System.Exception ex)
+				{
+					MessageBox.Show("Error: " + ex.Message);
+				}
+			}
         }
 
         private void cancel_Click(object sender, EventArgs e)
@@ -35,23 +65,35 @@ namespace ZigGis.ArcGIS.ArcMapUI
             Hide();
         }
 
+		/// <summary>
+		/// Add PostGIS Layer to ArcMap
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void ok_Click(object sender, EventArgs e)
         {
             Hide();
             owner.application.RefreshWindow();
             try
             {
-                // Open workspace and feature class.
-                IWorkspaceFactory wksf = new PostGisWksFactory();
-                IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(zigFile.Text, 0);
-                IFeatureClass fc = fwks.OpenFeatureClass(postgisView.Text);
-                // Create the new layer.
-                IFeatureLayer layer = new PostGisFeatureLayer();
-                layer.FeatureClass = fc;
-                layer.Name = fc.AliasName;
-                // Add the new layer.
-                IMxDocument doc = (IMxDocument)owner.application.Document;
-                doc.AddLayer(layer);
+                // Create a new layer for each checked PostGIS layers in the list
+				if (clbLayers.CheckedItems.Count > 0)
+				{
+					foreach (string layerToAdd in clbLayers.CheckedItems)
+					{
+						IFeatureClass fc = fwks.OpenFeatureClass(layerToAdd);
+						IFeatureLayer layer = new PostGisFeatureLayer();
+						layer.FeatureClass = fc;
+						layer.Name = fc.AliasName;
+						// Add the new layer.
+						IMxDocument doc = (IMxDocument)owner.application.Document;
+						doc.AddLayer(layer);
+					}
+				}
+				else
+				{
+					MessageBox.Show("No PostGIS layers added.");
+				}
             }
             catch (COMException COMex)
             {
@@ -77,6 +119,27 @@ namespace ZigGis.ArcGIS.ArcMapUI
         {
             
         }
+
+		/// <summary>
+		/// Load PostGIS layers name
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void butGetLayers_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				
+			}
+			catch (COMException COMex)
+			{
+				MessageBox.Show("Error " + COMex.ErrorCode.ToString() + ": " + COMex.Message);
+			}
+			catch (System.Exception ex)
+			{
+				MessageBox.Show("Error: " + ex.Message);
+			}
+		}
     }
 
     // This is a helper class so we can get the

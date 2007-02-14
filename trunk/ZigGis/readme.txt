@@ -56,10 +56,16 @@ For support and help please don't email us or post the help request in the PostG
 
 ***** RELEASE HISTORY *****
 
-10/01/2006, zigGIS 1.1.0.30072
+14/02/2007, zigGIS 1.1.0.20768
+Added support for reprojecting zigGIS data
+Implemented PostGisEnumDatasetName for iterating PostGis layer tables
+Implemented PostGisWksFactory.Open from opening a PostGIS workspace factory not necessarily from a zig File but from a PropertySet (in the SDEWorkspaceFactory fashion)
+The Add PostGIS data form has been made it better: there is not need now to type the PostGIS table name, but after selecting a zig file it will be possible to add on or more layers, shown in a checkboxlist
+
+10/01/2007, zigGIS 1.1.0
 Added support for PostGIS layer with a srid different than the undefined one (srid=-1). Previous versions were not drawing these layer.
 
-02/01/2006, zigGIS 1.1.0.29230
+02/01/2007, zigGIS 1.1.0
 Added support for int8, numeric and date Postgre datatypes.
 At this time Postgre tested datatypes for ZigGis are: 
 serial, int8, int4, numeric, geometry, date

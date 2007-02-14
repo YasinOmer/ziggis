@@ -26,7 +26,20 @@ namespace ZigGisSimpleWinApp
 		{
 			// Open workspace and feature class.
 			IWorkspaceFactory wksf = new PostGisWksFactory();
-			IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
+			
+			//Open from zig file
+			//IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
+			
+			//Open from PropertySet
+			IPropertySet ps = new PropertySetClass();
+			ps.SetProperty("server", "localhost");
+			ps.SetProperty("database", "TUTORIAL");
+			ps.SetProperty("user", "psqluser");
+			ps.SetProperty("password", "psqluser");
+			ps.SetProperty("port", "5432");
+			ps.SetProperty("configfile", @"C:\ziggis\ZigGis\logging.config");
+			IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.Open(ps, 0);
+
 			IFeatureClass fc = fwks.OpenFeatureClass("zone");
 			// Create the new layer (default renderer is ISimpleRenderer)
 			IFeatureLayer layer = new PostGisFeatureLayer();
