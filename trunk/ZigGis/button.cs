@@ -13,7 +13,7 @@ using ESRI.ArcGIS.SystemUI;
 
 namespace ZigGis.ArcGIS.ArcMapUI //Pulp.ArcGis.ZigGis
 {
-    [ClassInterface(ClassInterfaceType.None)]
+	[ClassInterface(ClassInterfaceType.AutoDual)] 
     [Guid("2FDB84D1-08D3-400A-9728-84A1141E1238")]
     public class Button : ICommand
     {

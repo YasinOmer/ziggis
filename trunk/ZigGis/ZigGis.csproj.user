@@ -3,4 +3,11 @@
     <StartAction>Program</StartAction>
     <StartProgram>C:\Programmi\ArcGIS\Bin\ArcMap.exe</StartProgram>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Programmi\ArcGIS\Bin\ArcMap.exe</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ProjectView>ShowAllFiles</ProjectView>
+  </PropertyGroup>
 </Project>

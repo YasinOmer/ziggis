@@ -35,7 +35,7 @@ namespace ZigGis.ArcGIS.ArcMapUI
 				{
 					zigFile.Text = openFileDlg.FileName;
 					// Open workspace
-					wksf = new PostGisWksFactory();
+					wksf = new PostGisWorkspaceFactory();
 					fwks = (IFeatureWorkspace)wksf.OpenFromFile(zigFile.Text, 0);
 					// Open workspace
 					IWorkspace ws = fwks as IWorkspace;
@@ -112,6 +112,14 @@ namespace ZigGis.ArcGIS.ArcMapUI
         {
             m_btn = ownerButton;
             Show(new ArcMapWindowWrapper(ownerButton.application));
+			//remove all checked items
+			for (int i = 0; i < clbLayers.Items.Count; i++)
+			{
+				if (clbLayers.GetItemChecked(i) == true)
+				{
+					clbLayers.SetItemChecked(i, false);
+				}
+			}
             Focus();
         }
 

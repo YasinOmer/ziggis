@@ -62,13 +62,13 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         internal PostGisFeatureClass(PostGisFeatureDataset postGisFeatureDataset, int featureClassId) : this(postGisFeatureDataset)
         {
-            m_layer = ((PostGisFeatureWks)postGisFeatureDataset.Workspace).connection.getLayer(featureClassId);
+            m_layer = ((PostGisFeatureWorkspace)postGisFeatureDataset.Workspace).connection.getLayer(featureClassId);
             init();
         }
 
         internal PostGisFeatureClass(PostGisFeatureDataset postGisFeatureDataset, string view) : this(postGisFeatureDataset)
         {
-            m_layer = ((PostGisFeatureWks)postGisFeatureDataset.Workspace).connection.getLayer(postGisFeatureDataset.Name, view);
+            m_layer = ((PostGisFeatureWorkspace)postGisFeatureDataset.Workspace).connection.getLayer(postGisFeatureDataset.Name, view);
             init();
         }
 

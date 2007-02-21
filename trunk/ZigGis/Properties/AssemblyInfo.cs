@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ZigGis")]
-[assembly: AssemblyDescription("An Open Source PostGis connector for Esri ArcGis Desktop")]
+[assembly: AssemblyTitle("zigGIS")]
+[assembly: AssemblyDescription("zigGIS - PostGIS connector for Esri ArcMap")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pulp Soft")]
-[assembly: AssemblyProduct("ZigGis")]
+[assembly: AssemblyProduct("zigGIS")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.1.0.*")]
-[assembly: AssemblyFileVersion("1.1.0.*")]
+[assembly: AssemblyVersion("1.1.1.0")]
+[assembly: AssemblyFileVersion("1.1.1.0")]

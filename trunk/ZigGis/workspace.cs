@@ -65,10 +65,9 @@ namespace ZigGis.ArcGIS.Geodatabase
             return "{" + key + "}";
         }
     }
-    
-    [Guid("D06CF752-8595-4fa3-83FD-D14B71ADF93F"), ClassInterface(ClassInterfaceType.None)]
-    public class PostGisWksFactory :
-        IWorkspaceFactory
+     [Guid("D06CF752-8595-4fa3-83FD-D14B71ADF93F"), ClassInterface(ClassInterfaceType.None), ProgId("ComInterOpClass")]
+   public class PostGisWorkspaceFactory :
+       IWorkspaceFactory
     {
         [ComRegisterFunction()]
         static void RegistrationFunction(Type t)
@@ -85,15 +84,15 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
 
         #region Logging setup
-        static private readonly CLogger log = new CLogger(typeof(PostGisWksFactory));
+        static private readonly CLogger log = new CLogger(typeof(PostGisWorkspaceFactory));
 
-        static PostGisWksFactory()
+        static PostGisWorkspaceFactory()
         {
         }
         #endregion
 
         // Let this be creatable.
-        public PostGisWksFactory() {}
+        public PostGisWorkspaceFactory() {}
 
         #region IWorkspaceFactory
         public bool ContainsWorkspace(string parentDirectory, IFileNames FileNames)
@@ -109,12 +108,12 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public IWorkspaceName Create(string parentDirectory, string Name, IPropertySet ConnectionProperties, int hWnd)
         {
-            return new PostGisWksName(this, m_config);
+            return new PostGisWorkspaceName(this, m_config);
         }
 
         public UID GetClassID()
         {
-            return Helper.getTypeUid(typeof(PostGisWksFactory));
+            return Helper.getTypeUid(typeof(PostGisWorkspaceFactory));
         }
 
         public IWorkspaceName GetWorkspaceName(string parentDirectory, IFileNames FileNames)
@@ -157,8 +156,8 @@ namespace ZigGis.ArcGIS.Geodatabase
 					log.Debug(hWnd.ToString());
 				}
 
-				PostGisWksName wksName = new PostGisWksName(this, config);
-				retVal = new PostGisFeatureWks(wksName);
+				PostGisWorkspaceName wksName = new PostGisWorkspaceName(this, config);
+				retVal = new PostGisFeatureWorkspace(wksName);
 			
 			}
 			finally
@@ -195,8 +194,8 @@ namespace ZigGis.ArcGIS.Geodatabase
                     log.Debug(FileName + "," + hWnd.ToString());
                 }
                 
-                PostGisWksName wksName = new PostGisWksName(this, config);
-                retVal = new PostGisFeatureWks(wksName);
+                PostGisWorkspaceName wksName = new PostGisWorkspaceName(this, config);
+                retVal = new PostGisFeatureWorkspace(wksName);
             }
             finally
             {
@@ -228,26 +227,26 @@ namespace ZigGis.ArcGIS.Geodatabase
     }
 
     [Guid("C7BE986C-24A5-4d32-A146-3A4D48D389E3"), ClassInterface(ClassInterfaceType.None)]
-    public class PostGisWksName :
+    public class PostGisWorkspaceName :
         IWorkspaceName,
         IName,
         IPersistStream
     {
-        // We want a way to create an empty PostGisWksName
+        // We want a way to create an empty PostGisWorkspaceName
         // since we need a way to do its Load() function.
-        internal PostGisWksName()
+        internal PostGisWorkspaceName()
         {
         }
 
 		/// <summary>
-		/// PostGisWksName constructor from Config (both for zig file and PropertySet)
+		/// PostGisWorkspaceName constructor from Config (both for zig file and PropertySet)
 		/// Paolo Corti, january 2007
 		/// </summary>
-		/// <param name="postGisWksFactory"></param>
+		/// <param name="PostGisWorkspaceFactory"></param>
 		/// <param name="connectionProperties"></param>
-		public PostGisWksName(PostGisWksFactory postGisWksFactory, Config conf)
+		public PostGisWorkspaceName(PostGisWorkspaceFactory PostGisWorkspaceFactory, Config conf)
 		{
-			m_factory = postGisWksFactory;
+			m_factory = PostGisWorkspaceFactory;
 			//loadConfig(zigFileName);
 			m_cfg = conf;
 		}
@@ -255,13 +254,13 @@ namespace ZigGis.ArcGIS.Geodatabase
 		/*
 		 * old constructor from Abe
 		/// <summary>
-		/// PostGisWksName constructor from zigFile
+		/// PostGisWorkspaceName constructor from zigFile
 		/// </summary>
-		/// <param name="postGisWksFactory"></param>
+		/// <param name="PostGisWorkspaceFactory"></param>
 		/// <param name="zigFileName"></param>
-        public PostGisWksName(PostGisWksFactory postGisWksFactory, string zigFileName)
+        public PostGisWorkspaceName(PostGisWorkspaceFactory PostGisWorkspaceFactory, string zigFileName)
         {
-            m_factory = postGisWksFactory;
+            m_factory = PostGisWorkspaceFactory;
             loadConfig(zigFileName);
         }
 		*/
@@ -303,18 +302,18 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public esriWorkspaceType Type { get { return esriWorkspaceType.esriRemoteDatabaseWorkspace; } }
 
-        private PostGisWksFactory m_factory = null;
+        private PostGisWorkspaceFactory m_factory = null;
         public IWorkspaceFactory WorkspaceFactory
         {
             get
             {
                 if (m_factory == null)
-                    m_factory = new PostGisWksFactory();
+                    m_factory = new PostGisWorkspaceFactory();
                 return m_factory;
             }
         }
 
-        // Todo - only PostGisFeatureWks is implemented right now.
+        // Todo - only PostGisFeatureWorkspace is implemented right now.
         // Perhaps in the future I'll implement PostGisTableWks.
         // The ProgId must be limited to this one or these two.
         private string m_wksfGuid;
@@ -338,7 +337,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public object Open()
         {
-            return new PostGisFeatureWks(this);
+            return new PostGisFeatureWorkspace(this);
         }
         #endregion
 
@@ -377,7 +376,7 @@ namespace ZigGis.ArcGIS.Geodatabase
     }
 
     [Guid("E9804134-A3F6-44f9-84AC-3BBB8B2EA955"), ClassInterface(ClassInterfaceType.None)]
-    public class PostGisFeatureWks :
+    public class PostGisFeatureWorkspace :
         IWorkspace,
         IFeatureWorkspace,
         IWorkspaceProperties,
@@ -391,15 +390,15 @@ namespace ZigGis.ArcGIS.Geodatabase
         IWorkspaceSpatialReferenceInfo,
         IDatabaseConnectionInfo
     {
-        static private readonly CLogger log = new CLogger(typeof(PostGisFeatureWks));
+        static private readonly CLogger log = new CLogger(typeof(PostGisFeatureWorkspace));
         
-        public PostGisFeatureWks(PostGisWksName postGisWksName)
+        public PostGisFeatureWorkspace(PostGisWorkspaceName PostGisWorkspaceName)
         {
-            m_wksName = postGisWksName;
+            m_wksName = PostGisWorkspaceName;
         }
 
-        private PostGisWksName m_wksName;
-        private PostGisWksName postGisWksName { get { return m_wksName; } }
+        private PostGisWorkspaceName m_wksName;
+        private PostGisWorkspaceName PostGisWorkspaceName { get { return m_wksName; } }
 
         private Connection m_con;
         internal Connection connection
@@ -410,8 +409,8 @@ namespace ZigGis.ArcGIS.Geodatabase
 
                 if (m_con == null)
                 {
-                    if (log.IsDebugEnabled) log.Debug(postGisWksName.config.connectionString);
-                    m_con = new Connection(postGisWksName.config.connectionString, true);
+                    if (log.IsDebugEnabled) log.Debug(PostGisWorkspaceName.config.connectionString);
+                    m_con = new Connection(PostGisWorkspaceName.config.connectionString, true);
                 }
 
                 log.leaveFunc();
@@ -426,7 +425,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
 
         #region IWorkspace
-        public IPropertySet ConnectionProperties { get { return postGisWksName.config.connectionPropertySet; } }
+        public IPropertySet ConnectionProperties { get { return PostGisWorkspaceName.config.connectionPropertySet; } }
 
         public void ExecuteSQL(string sqlStmt)
         {
@@ -443,7 +442,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         // Connect = no, Exists = false.
         public bool Exists()
         {
-            return File.Exists(postGisWksName.PathName);
+            return File.Exists(PostGisWorkspaceName.PathName);
         }
 
         public bool IsDirectory()
@@ -456,11 +455,11 @@ namespace ZigGis.ArcGIS.Geodatabase
             return false;
         }
 
-        public string PathName { get { return postGisWksName.PathName; } }
+        public string PathName { get { return PostGisWorkspaceName.PathName; } }
 
         public esriWorkspaceType Type { get { return esriWorkspaceType.esriRemoteDatabaseWorkspace; } }
 
-        public IWorkspaceFactory WorkspaceFactory { get { return postGisWksName.WorkspaceFactory; } }
+        public IWorkspaceFactory WorkspaceFactory { get { return PostGisWorkspaceName.WorkspaceFactory; } }
 
         public IEnumDatasetName get_DatasetNames(esriDatasetType DatasetType)
         {
@@ -529,7 +528,7 @@ namespace ZigGis.ArcGIS.Geodatabase
                     view = bits[1];
                 }
                 PostGisDatasetName dsName = new PostGisDatasetName();
-                dsName.WorkspaceName = postGisWksName;
+                dsName.WorkspaceName = PostGisWorkspaceName;
                 dsName.Name = schema;
 
                 // Todo - ensure the schema exists.  Is it possible?
@@ -777,8 +776,8 @@ namespace ZigGis.ArcGIS.Geodatabase
         #region IDataset
         public string BrowseName
         {
-            get { return postGisWksName.BrowseName; }
-            set { postGisWksName.BrowseName = value; }
+            get { return PostGisWorkspaceName.BrowseName; }
+            set { PostGisWorkspaceName.BrowseName = value; }
         }
 
         public bool CanCopy()
@@ -796,7 +795,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             return false;
         }
 
-        public string Category { get { return postGisWksName.Category;}}
+        public string Category { get { return PostGisWorkspaceName.Category;}}
 
         public IDataset Copy(string copyName, IWorkspace copyWorkspace)
         {
@@ -808,11 +807,11 @@ namespace ZigGis.ArcGIS.Geodatabase
             throw new NotImplementedException();
         }
 
-        public IName FullName { get { return postGisWksName;}}
+        public IName FullName { get { return PostGisWorkspaceName;}}
 
         public string Name { get { return "Todo - implement";}}
 
-        public IPropertySet PropertySet { get { return postGisWksName.ConnectionProperties; } }
+        public IPropertySet PropertySet { get { return PostGisWorkspaceName.ConnectionProperties; } }
 
         public void Rename(string Name)
         {
@@ -1124,7 +1123,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             get
             {
                 //if (m_wksName == null)
-                //    m_wksName = new PostGisWksName(
+                //    m_wksName = new PostGisWorkspaceName(
                 return m_wksName;
             }
             set {m_wksName = value;}
@@ -1145,7 +1144,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
             // Open the Workspace first.
             IWorkspaceName wksn = ((IDatasetName)this).WorkspaceName;
-            PostGisFeatureWks wks = (PostGisFeatureWks)((IName)wksn).Open();
+            PostGisFeatureWorkspace wks = (PostGisFeatureWorkspace)((IName)wksn).Open();
             return new PostGisFeatureDataset(this, wks);
         }
         #endregion
@@ -1173,7 +1172,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             m_name = helper.readString();
 
             // Restore the WorkspaceName.
-            m_wksName = new PostGisWksName();
+            m_wksName = new PostGisWorkspaceName();
             ((IPersistStream)m_wksName).Load(pstm);
         }
 
@@ -1222,10 +1221,10 @@ namespace ZigGis.ArcGIS.Geodatabase
         IDatasetEdit,
         IDataset
     {
-        public PostGisFeatureDataset(PostGisDatasetName postGisDatasetName, PostGisFeatureWks postGisFeatureWks)
+        public PostGisFeatureDataset(PostGisDatasetName postGisDatasetName, PostGisFeatureWorkspace PostGisFeatureWorkspace)
         {
             m_dsName = postGisDatasetName;
-            m_fwks = postGisFeatureWks;
+            m_fwks = PostGisFeatureWorkspace;
         }
 
         public PostGisFeatureDataset(PostGisDatasetName postGisDatasetName)
@@ -1236,8 +1235,8 @@ namespace ZigGis.ArcGIS.Geodatabase
         private PostGisDatasetName m_dsName;
         private PostGisDatasetName postGisDatasetName { get { return m_dsName; } }
 
-        private PostGisFeatureWks m_fwks;
-        private PostGisFeatureWks postGisFeatureWks { get { return m_fwks; } }
+        private PostGisFeatureWorkspace m_fwks;
+        private PostGisFeatureWorkspace PostGisFeatureWorkspace { get { return m_fwks; } }
 
         #region IFeatureDataset
         public string BrowseName
@@ -1245,7 +1244,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append(postGisFeatureWks.ConnectionProperties.GetProperty("db"));
+                sb.Append(PostGisFeatureWorkspace.ConnectionProperties.GetProperty("db"));
                 sb.Append(".");
                 sb.Append(postGisDatasetName.Name);
                 return sb.ToString();
@@ -1304,7 +1303,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public IPropertySet PropertySet
         {
-            get { return postGisFeatureWks.ConnectionProperties; }
+            get { return PostGisFeatureWorkspace.ConnectionProperties; }
         }
 
         // Todo - throw an exception?
@@ -1324,7 +1323,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public IWorkspace Workspace
         {
-            get { return postGisFeatureWks; }
+            get { return PostGisFeatureWorkspace; }
         }
         #endregion
 
