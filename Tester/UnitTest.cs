@@ -43,7 +43,7 @@ namespace zigGISTester
 		public void Init()
 		{
 			// Open workspace and feature class.
-			IWorkspaceFactory wksf = new PostGisWksFactory();
+			IWorkspaceFactory wksf = new PostGisWorkspaceFactory();
 			
 			//Open from zigFile
 			//ws = wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);

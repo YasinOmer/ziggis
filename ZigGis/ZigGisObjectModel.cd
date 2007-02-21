@@ -17,7 +17,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ZigGis.ArcGIS.Geodatabase.PostGisWksFactory" BaseTypeListCollapsed="true">
+  <Class Name="ZigGis.ArcGIS.Geodatabase.PostGisWorkspaceFactory" BaseTypeListCollapsed="true">
     <Position X="0.5" Y="1" Width="3.25" />
     <TypeIdentifier>
       <FileName>workspace.cs</FileName>
@@ -96,7 +96,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ZigGis.ArcGIS.Geodatabase.PostGisFeatureWks">
+  <Class Name="ZigGis.ArcGIS.Geodatabase.PostGisFeatureWorkspace">
     <Position X="4.25" Y="2" Width="3.25" />
     <TypeIdentifier>
       <FileName>workspace.cs</FileName>
@@ -128,7 +128,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ZigGis.ArcGIS.Geodatabase.PostGisWksName">
+  <Class Name="ZigGis.ArcGIS.Geodatabase.PostGisWorkspaceName">
     <Position X="8.25" Y="6.25" Width="2.75" />
     <TypeIdentifier>
       <FileName>workspace.cs</FileName>

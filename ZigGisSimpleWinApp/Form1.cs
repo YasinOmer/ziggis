@@ -25,7 +25,7 @@ namespace ZigGisSimpleWinApp
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			// Open workspace and feature class.
-			IWorkspaceFactory wksf = new PostGisWksFactory();
+			IWorkspaceFactory wksf = new PostGisWorkspaceFactory();
 			
 			//Open from zig file
 			//IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
