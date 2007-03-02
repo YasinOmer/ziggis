@@ -33,6 +33,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         IFeatureLayer,
         IFeatureLayer2,
         IFeatureLayerDefinition,
+		IFeatureLayerSelectionEvents, //Paolo
         IFeatureSelection,
         IFind,
         IGeoDataset,
@@ -47,6 +48,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         ILayerDrawingProperties,
         ILayerEffects,
         ILayerExtensions,
+		ILayerEvents, //Paolo
         ILayerFields,
         ILayerInfo,
         ILayerPosition,
@@ -538,6 +540,8 @@ namespace ZigGis.ArcGIS.Geodatabase
             set
             {
                 ((IFeatureLayer)featureLayer).Visible = value;
+				//Paolo: VisibilityChanged
+				((ILayerEvents)featureLayer).VisibilityChanged(value);
             }
         }
 
@@ -642,6 +646,8 @@ namespace ZigGis.ArcGIS.Geodatabase
             set
             {
                 ((ILayer)featureLayer).Visible = value;
+				//Paolo: VisibilityChanged
+				((ILayerEvents)featureLayer).VisibilityChanged(value);
             }
         }
 
@@ -764,8 +770,17 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
 
-        #region IFeatureSelection
-        void IFeatureSelection.Add(IFeature Feature)
+		#region IFeatureLayerSelectionEvents
+
+		void IFeatureLayerSelectionEvents.FeatureLayerSelectionChanged()
+		{
+			((IFeatureLayerSelectionEvents)featureLayer).FeatureLayerSelectionChanged();
+		}
+
+		#endregion
+
+		#region IFeatureSelection
+		void IFeatureSelection.Add(IFeature Feature)
         {
             ((IFeatureSelection)featureLayer).Add(Feature);
         }
@@ -825,6 +840,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
             get
             {
+				//continuosly called from ArcMap
                 return ((IFeatureSelection)featureLayer).SelectionSet;
             }
             set
@@ -1470,8 +1486,17 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
 
-        #region ILayerInfo
-        int ILayerInfo.LargeImage
+		#region ILayerEvents
+
+		void ILayerEvents.VisibilityChanged(bool currentState)
+		{
+			((ILayerEvents)featureLayer).VisibilityChanged(currentState);
+		}
+
+		#endregion
+
+		#region ILayerInfo
+		int ILayerInfo.LargeImage
         {
             get { return ((ILayerInfo)featureLayer).LargeImage; }
         }

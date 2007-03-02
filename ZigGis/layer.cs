@@ -23,6 +23,7 @@ using System;
 using System.Data;
 using System.Text;
 using ZigGis.Utilities;
+using ESRI.ArcGIS.Geometry;
 
 namespace ZigGis.PostGis
 {
@@ -90,8 +91,11 @@ namespace ZigGis.PostGis
             {
                 m_geomFld = DbHelper.getValueAsString(dr[PostGisConstants.geometryColumnLookupField]);
                 m_geomType = DbHelper.getValueAsString(dr[PostGisConstants.geometryTypeField]);
-                m_spatialRef = DbHelper.getValueAsString(dr[PostGisConstants.spatialReferenceSrField]);
-								m_srid = (int)dr[PostGisConstants.spatialReferenceIdField];
+                m_spatialRefText = DbHelper.getValueAsString(dr[PostGisConstants.spatialReferenceSrField]);
+				m_srid = (int)dr[PostGisConstants.spatialReferenceIdField];
+				//Paolo : set Spatial Reference
+				ISpatialReferenceFactory2 srf = new SpatialReferenceEnvironmentClass();
+				m_spatialReference = srf.CreateSpatialReference(m_srid); ;
                 if (loadFromOid)
                 {
                     m_schema = DbHelper.getValueAsString(dr[PostGisConstants.schemaField]);
@@ -114,11 +118,15 @@ namespace ZigGis.PostGis
         private string m_geomType;
         public string geometryType { get { return m_geomType; } }
 
-        private string m_spatialRef;
-        public string spatialReference { get { return m_spatialRef; } }
+        private string m_spatialRefText;
+        public string spatialReferenceText { get { return m_spatialRefText; } }
 
-				private int m_srid = -1;
-				public int srid { get { return m_srid; } }
+		//Paolo - we need to syncronize srid and spatial reference with the featurelayer!
+		private ISpatialReference m_spatialReference;
+		public ISpatialReference SpatialReference { get { return m_spatialReference; } }
+
+		private int m_srid = -1;
+		public int srid { get { return m_srid; } }
 
         public string schemaAndView
         {

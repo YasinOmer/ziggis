@@ -273,7 +273,10 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
 
 		private Config m_cfg;
-		internal Config config { get { return m_cfg; } }
+		internal Config config 
+		{ 
+			get { return m_cfg; }
+		}
 
         #region IWorkspaceName
         private string m_browseName = "PostGIS Data";
@@ -290,7 +293,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
             get { return config.connectionPropertySet; }
             // Todo - implement this.
-            set {}
+			set { }
         }
 
         public string PathName
@@ -360,9 +363,21 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
             StreamHelper helper = new StreamHelper(pstm);
 
+			/* Paolo : we don't use zig file anymore
             // Load the zig file.
             string path = helper.readString();
             loadConfig(path);
+			 */
+
+			// Paolo - Restore Connection properties
+			IPropertySet ps = new PropertySetClass();
+			ps.SetProperty("server", helper.readString());
+			ps.SetProperty("database", helper.readString());
+			ps.SetProperty("user", helper.readString());
+			ps.SetProperty("password", helper.readString());
+			ps.SetProperty("port", helper.readString());
+
+			m_cfg = new Config(ps);
         }
 
         public void Save(IStream pstm, int fClearDirty)
@@ -1183,6 +1198,13 @@ namespace ZigGis.ArcGIS.Geodatabase
             // Save the Postgres schema name.
             helper.writeString(Name);
 
+			// Paolo - Save connection properties (server, database, user, password, port)
+			helper.writeString(m_wksName.ConnectionProperties.GetProperty("server").ToString());
+			helper.writeString(m_wksName.ConnectionProperties.GetProperty("database").ToString());
+			helper.writeString(m_wksName.ConnectionProperties.GetProperty("user").ToString());
+			helper.writeString(m_wksName.ConnectionProperties.GetProperty("password").ToString());
+			helper.writeString(m_wksName.ConnectionProperties.GetProperty("port").ToString());
+
             // Save the WorkspaceName.
             IWorkspaceName wksName = ((IDatasetName)this).WorkspaceName;
             ((IPersistStream)wksName).Save(pstm, fClearDirty);
@@ -1439,7 +1461,12 @@ namespace ZigGis.ArcGIS.Geodatabase
 		/// </summary>
 		private IPropertySet m_ps;
 		// Todo - add a setter.
-		public IPropertySet connectionPropertySet { get { return m_ps; } }
+		public IPropertySet connectionPropertySet 
+		{ 
+			get { return m_ps; }
+			// Paolo (added set)
+			set { m_ps = value; }
+		}
 
 		/// <summary>
 		/// connectionString

@@ -137,8 +137,9 @@ namespace ZigGis.ArcGIS.Geodatabase
                     retVal = (int)enumerator.Current;
                 else
                 {
-                    //log.Debug("End of enum.");
+                    log.Debug("End of enum.");
                     Helper.signalEndOfEnum();
+					//retVal = -1;
                 }
             }
             finally

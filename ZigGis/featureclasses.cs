@@ -247,16 +247,40 @@ namespace ZigGis.ArcGIS.Geodatabase
             if (log.IsDebugEnabled) log.Debug(Helper.objectToString(QueryFilter) + "," + selType.ToString() + "," + selOption.ToString() + "," + Helper.objectToString(selectionContainer));
 
             ISelectionSet retVal = null;
+
             try
             {
-                retVal = new PostGisSelectionSet(this);
+				//retVal = new PostGisSelectionSet(this);
+
+				//Paolo - 2 cases, with null QueryFilter and without
+				if (QueryFilter == null)
+				{
+					retVal = new PostGisSelectionSet(this);
+				}
+				else
+				{
+					string sql = "";
+					string fields = "";
+					string where = "";
+					GeomHelper.aoQryToPostGisQry(QueryFilter, postGisLayer, out fields, out where);
+					//TODO Paolo: make fullname property available
+					sql = "SELECT " + PostGisConstants.idField + " FROM " + postGisLayer.schema + "." + postGisLayer.view;
+					if (where.Length > 0)
+					{
+						sql = sql + " WHERE " + where;
+					}
+					AutoDataReader dr = ((PostGisFeatureWorkspace)this.FeatureDataset.Workspace).connection.doQuery(sql); 
+					retVal = new PostGisSelectionSet(this, dr);
+				}
+				
             }
             finally
             {
                 log.leaveFunc();
             }
-            
-            return retVal;
+
+			return retVal as ISelectionSet;
+
         }
 
         public string ShapeFieldName { get { return postGisLayer.geometryField; } }
@@ -981,17 +1005,25 @@ namespace ZigGis.ArcGIS.Geodatabase
     {
         public PostGisSelectionSet(PostGisFeatureClass postGisFeatureClass) : this(postGisFeatureClass, null)
         {
+			System.Diagnostics.Debug.WriteLine("Empty PostGisSelectionSet...");
         }
         
         public PostGisSelectionSet(PostGisFeatureClass postGisFeatureClass, AutoDataReader dataReader)
         {
-            m_featClass = postGisFeatureClass;
+			System.Diagnostics.Debug.WriteLine("NOT-Empty PostGisSelectionSet...");
+			m_featClass = postGisFeatureClass;
+			oids.Add(1);
+			/*
             m_dr = dataReader;
             if (dataReader != null)
             {
-                while (dataReader.Read())
-                    oids.Add(dataReader[PostGisConstants.idField]);
+				while (dataReader.Read())
+				{
+					oids.Add(dataReader[PostGisConstants.idField]);
+				}
+				dataReader.Close();
             }
+			*/
         }
 
         private PostGisFeatureClass m_featClass;
@@ -1006,7 +1038,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         #region ISelectionSet
         public void Add(int OID)
         {
-            oids.Add(OID);
+            oids.Add((object)OID);
         }
 
         // Todo - implement this.
@@ -1039,6 +1071,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         // Todo - implement this.
         public void Refresh()
         {
+			
         }
 
         // Todo - implement this.
