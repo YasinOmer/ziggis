@@ -35,6 +35,7 @@ using ESRI.ArcObjects.Core;
 using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Carto;
 #endif
 
 namespace ZigGis.Utilities
@@ -241,13 +242,18 @@ namespace ZigGis.Utilities
 
 				// Add the spatial stuff.
 				ISpatialFilter sQuery = query as ISpatialFilter;
+
+				/*
 				//Paolo: FactoryCode=0 for srid=-1
-				int outSrid = sQuery.Geometry.SpatialReference.FactoryCode;
+				//int outSrid = sQuery.Geometry.SpatialReference.FactoryCode; --error! in some case the query has not a SpatialReference associated!
+				int outSrid = postGisLayer.SpatialReference.FactoryCode;
 				if (outSrid == 0)
 				{
 					outSrid = -1;
 				}
-				aoFieldsToPostGisFields(ref fields, postGisLayer, outSrid);
+				*/
+
+				//aoFieldsToPostGisFields(ref fields, postGisLayer, outSrid);
 				StringBuilder sb = new StringBuilder(query.WhereClause);
 				if (sQuery != null)
 				{
@@ -256,6 +262,9 @@ namespace ZigGis.Utilities
 					ISpatialReference sRef = sQuery.Geometry.SpatialReference;
 					if (sRef != null && sRef.FactoryCode != 0)
 						srid = sRef.FactoryCode;
+
+					aoFieldsToPostGisFields(ref fields, postGisLayer, srid);
+
 					// Debug - just create a polygon from the envelope for now.
 					object o = System.Type.Missing;
 					IEnvelope env = sQuery.Geometry.Envelope;
