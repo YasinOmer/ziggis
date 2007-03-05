@@ -33,6 +33,7 @@
     <Reference Include="ESRI.ArcGIS.ArcMapUI, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Carto, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.CartoUI, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
+    <Reference Include="ESRI.ArcGIS.Catalog, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Display, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Framework, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
     <Reference Include="ESRI.ArcGIS.Geodatabase, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
@@ -64,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="catalog.cs" />
     <Compile Include="cursors.cs" />
     <Compile Include="database.cs" />
     <Compile Include="featureclasses.cs" />
@@ -83,6 +85,12 @@
       <DependentUpon>add_form.cs</DependentUpon>
     </Compile>
     <Compile Include="button.cs" />
+    <Compile Include="UI\PostGisConnectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\PostGisConnectionForm.designer.cs">
+      <DependentUpon>PostGisConnectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="workspace.cs" />
     <Compile Include="ZigGisInstaller.cs">
       <SubType>Component</SubType>
@@ -105,6 +113,10 @@
   <ItemGroup>
     <EmbeddedResource Include="UI\add_form.resx">
       <DependentUpon>add_form.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\PostGisConnectionForm.resx">
+      <DependentUpon>PostGisConnectionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
