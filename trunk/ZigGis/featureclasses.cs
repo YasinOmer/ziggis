@@ -1012,8 +1012,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
 			System.Diagnostics.Debug.WriteLine("NOT-Empty PostGisSelectionSet...");
 			m_featClass = postGisFeatureClass;
-			oids.Add(1);
-			/*
+			//oids.Add(1);
             m_dr = dataReader;
             if (dataReader != null)
             {
@@ -1023,7 +1022,6 @@ namespace ZigGis.ArcGIS.Geodatabase
 				}
 				dataReader.Close();
             }
-			*/
         }
 
         private PostGisFeatureClass m_featClass;
