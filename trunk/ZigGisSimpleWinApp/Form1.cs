@@ -26,8 +26,8 @@ namespace ZigGisSimpleWinApp
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			LoadPostGisLayer();
-			//LoadShapefile();
+			//LoadPostGisLayer();
+			LoadShapefile();
 		}
 
 		/// <summary>
@@ -59,8 +59,8 @@ namespace ZigGisSimpleWinApp
 			ILayer ly = layer as ILayer;
 			IGeoFeatureLayer gfl = layer as IGeoFeatureLayer;
 			doSimpleRenderer(gfl);
-			//SelectFeaturesFromFeatureClass(fc, fwks as IWorkspace);
-			SelectFeaturesFromFeatureLayer(layer);
+			SelectFeaturesFromFeatureClass(fc, fwks as IWorkspace);
+			//SelectFeaturesFromFeatureLayer(layer);
 			//doUniqueValueRenderer(gfl);
 			axMapControl1.AddLayer(gfl as ILayer, 0);
 		}
@@ -77,6 +77,7 @@ namespace ZigGisSimpleWinApp
 			layer.FeatureClass = fc;
 			layer.Name = fc.AliasName;
 			SelectFeaturesFromFeatureLayer(layer);
+			SelectFeaturesFromFeatureClass(fc, fw as IWorkspace);
 			axMapControl1.AddLayer(layer as ILayer, 0);
 		}
 

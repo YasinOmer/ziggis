@@ -133,7 +133,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
 		/// <summary>
 		/// Open a PostGIS workspace from ConnectionProperties
-		/// Paolo Corti, january 2007
+		/// (Paolo Corti, january 2007)
 		/// </summary>
 		/// <param name="ConnectionProperties"></param>
 		/// <param name="hWnd"></param>
@@ -240,7 +240,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
 		/// <summary>
 		/// PostGisWorkspaceName constructor from Config (both for zig file and PropertySet)
-		/// Paolo Corti, january 2007
+		/// (Paolo Corti, january 2007)
 		/// </summary>
 		/// <param name="PostGisWorkspaceFactory"></param>
 		/// <param name="connectionProperties"></param>

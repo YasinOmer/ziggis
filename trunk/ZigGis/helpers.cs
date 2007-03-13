@@ -225,6 +225,13 @@ namespace ZigGis.Utilities
 			return p;
 		}
 
+		/// <summary>
+		/// Generate a query for PostGIS from an IQueryFilter for a Layer
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="postGisLayer"></param>
+		/// <param name="fields">output fields for the query</param>
+		/// <param name="where">output where clause for the query</param>
 		static public void aoQryToPostGisQry(IQueryFilter query, Layer postGisLayer, out string fields, out string where)
 		{
 			log.enterFunc("aoQryToPostGisQry");
@@ -243,27 +250,29 @@ namespace ZigGis.Utilities
 				// Add the spatial stuff.
 				ISpatialFilter sQuery = query as ISpatialFilter;
 
-				/*
+
 				//Paolo: FactoryCode=0 for srid=-1
-				//int outSrid = sQuery.Geometry.SpatialReference.FactoryCode; --error! in some case the query has not a SpatialReference associated!
 				int outSrid = postGisLayer.SpatialReference.FactoryCode;
 				if (outSrid == 0)
 				{
 					outSrid = -1;
 				}
-				*/
 
-				//aoFieldsToPostGisFields(ref fields, postGisLayer, outSrid);
+				aoFieldsToPostGisFields(ref fields, postGisLayer, outSrid);
 				StringBuilder sb = new StringBuilder(query.WhereClause);
+				//if there is a spatial filter do the following...
 				if (sQuery != null)
 				{
-					int srid = -1;
+					//int srid = -1;
 					int layerSrid = postGisLayer.srid;
+
+					/*
 					ISpatialReference sRef = sQuery.Geometry.SpatialReference;
 					if (sRef != null && sRef.FactoryCode != 0)
 						srid = sRef.FactoryCode;
 
 					aoFieldsToPostGisFields(ref fields, postGisLayer, srid);
+					*/
 
 					// Debug - just create a polygon from the envelope for now.
 					object o = System.Type.Missing;
@@ -278,9 +287,9 @@ namespace ZigGis.Utilities
 						sb.Append(" and ");
 
 					sb.Append("intersects(transform(");
-					sb.Append(aoPolygonToWkt((IPolygon)pg, true, srid));
-					sb.Append("," + srid.ToString() + "),");
-					sb.Append("transform(" + postGisLayer.geometryField + "," + srid.ToString() + ")");
+					sb.Append(aoPolygonToWkt((IPolygon)pg, true, outSrid));
+					sb.Append("," + outSrid.ToString() + "),");
+					sb.Append("transform(" + postGisLayer.geometryField + "," + outSrid.ToString() + ")");
 					sb.Append(")=true");
 				}
 				where = sb.ToString();
@@ -315,7 +324,6 @@ namespace ZigGis.Utilities
 			Hashtable fieldMap = new Hashtable(fieldArray.Length);
 			foreach (string f in fieldArray)
 				fieldMap.Add(f.ToLower(), true);  // Use a dummy value.
-
 			string name;
 			bool load;
 			StringBuilder sb = new StringBuilder();

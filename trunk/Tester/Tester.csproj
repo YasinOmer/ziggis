@@ -30,14 +30,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ESRI.ArcGIS.AxMapControl, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="ESRI.ArcGIS.Carto, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="ESRI.ArcGIS.Display, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="ESRI.ArcGIS.Geodatabase, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="ESRI.ArcGIS.Geometry, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="ESRI.ArcGIS.MapControl, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="ESRI.ArcGIS.System, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
-    <Reference Include="ESRI.ArcGIS.SystemUI, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86" />
+    <Reference Include="ESRI.ArcGIS.AxMapControl, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Carto, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Display, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Geodatabase, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Geometry, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.MapControl, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.System, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.SystemUI, Version=9.0.0.560, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\zigGIS-02\log4net-1.2.10\bin\net\2.0\debug\log4net.dll</HintPath>

@@ -540,8 +540,6 @@ namespace ZigGis.ArcGIS.Geodatabase
             set
             {
                 ((IFeatureLayer)featureLayer).Visible = value;
-				//Paolo: VisibilityChanged
-				((ILayerEvents)featureLayer).VisibilityChanged(value);
             }
         }
 
@@ -646,8 +644,6 @@ namespace ZigGis.ArcGIS.Geodatabase
             set
             {
                 ((ILayer)featureLayer).Visible = value;
-				//Paolo: VisibilityChanged
-				((ILayerEvents)featureLayer).VisibilityChanged(value);
             }
         }
 
