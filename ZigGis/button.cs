@@ -21,7 +21,8 @@ namespace ZigGis.ArcGIS.ArcMapUI //Pulp.ArcGis.ZigGis
 
         private void createIcon()
         {
-            Bitmap icon = new Bitmap(GetType().Assembly.GetManifestResourceStream("Pulp.ArcGis.ZigGis.zig.bmp"));
+            //Bitmap icon = new Bitmap(GetType().Assembly.GetManifestResourceStream("Pulp.ArcGis.ZigGis.zig.bmp"));
+			Bitmap icon = new Bitmap(GetType().Assembly.GetManifestResourceStream("Pulp.ArcGis.ZigGis.images.pgsql_sm.bmp"));
             if (icon != null)
             {
                 icon.MakeTransparent(icon.GetPixel(1, 1));

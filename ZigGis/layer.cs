@@ -95,7 +95,14 @@ namespace ZigGis.PostGis
 				m_srid = (int)dr[PostGisConstants.spatialReferenceIdField];
 				//Paolo : set Spatial Reference
 				ISpatialReferenceFactory2 srf = new SpatialReferenceEnvironmentClass();
-				m_spatialReference = srf.CreateSpatialReference(m_srid); ;
+				if (m_srid == -1)
+				{
+					m_spatialReference = new UnknownCoordinateSystemClass();
+				}
+				else
+				{
+					m_spatialReference = srf.CreateSpatialReference(m_srid);
+				}
                 if (loadFromOid)
                 {
                     m_schema = DbHelper.getValueAsString(dr[PostGisConstants.schemaField]);
@@ -108,7 +115,7 @@ namespace ZigGis.PostGis
             {
                 // Todo - throw exception.
             }
-					  //Initialize spatial reference
+			//Initialize spatial reference
             log.leaveFunc();
         }
 
@@ -193,6 +200,7 @@ namespace ZigGis.PostGis
             get
             {
                 byte [] retVal = null;
+				//TODO we should transform the extent here, according to srid (Paolo)
                 string sql = DbHelper.createSelectSql(schemaAndView, "asbinary(extent(" + geometryField + "))", null);
                 using (AutoDataReader dr = connection.doQuery(sql))
                 {

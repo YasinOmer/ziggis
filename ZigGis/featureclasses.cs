@@ -37,6 +37,8 @@ using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Carto;
+
 #endif
 
 namespace ZigGis.ArcGIS.Geodatabase
@@ -240,6 +242,14 @@ namespace ZigGis.ArcGIS.Geodatabase
             return retVal;
         }
 
+		/// <summary>
+		/// Get a ISelectionSet from the feature class (Paolo, march 2007)
+		/// </summary>
+		/// <param name="QueryFilter"></param>
+		/// <param name="selType"></param>
+		/// <param name="selOption"></param>
+		/// <param name="selectionContainer"></param>
+		/// <returns></returns>
         public ISelectionSet Select(IQueryFilter QueryFilter, esriSelectionType selType, esriSelectionOption selOption, IWorkspace selectionContainer)
         {
             log.enterFunc("Select");
@@ -252,7 +262,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             {
 				//retVal = new PostGisSelectionSet(this);
 
-				//Paolo - 2 cases, with null QueryFilter and without
+				//2 cases, with null QueryFilter and without
 				if (QueryFilter == null)
 				{
 					retVal = new PostGisSelectionSet(this);
@@ -263,13 +273,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 					string fields = "";
 					string where = "";
 					GeomHelper.aoQryToPostGisQry(QueryFilter, postGisLayer, out fields, out where);
-					//TODO Paolo: make fullname property available
-					sql = "SELECT " + PostGisConstants.idField + " FROM " + postGisLayer.schema + "." + postGisLayer.view;
-					if (where.Length > 0)
-					{
-						sql = sql + " WHERE " + where;
-					}
-					AutoDataReader dr = ((PostGisFeatureWorkspace)this.FeatureDataset.Workspace).connection.doQuery(sql); 
+					AutoDataReader dr = postGisLayer.doQuery(fields, where);
 					retVal = new PostGisSelectionSet(this, dr);
 				}
 				
@@ -521,16 +525,17 @@ namespace ZigGis.ArcGIS.Geodatabase
                     // *--- Handle special fields ---*
 
                     // Load the Id.
-                    if (name == idFld)
-                        m_oid = (int)o;
+					if (name == idFld)
+						m_oid = dataRecord.GetInt32(i);
+					//m_oid = (int)o;
 
-                    // Load the geometry.
-                    else if (name == geomFld)
-                    {
-                        WkbParser parser = new WkbParser();
-                        m_geom = parser.parseWkb((byte[])o);
-                        o = Shape;
-                    }
+					// Load the geometry.
+					else if (name == geomFld)
+					{
+						WkbParser parser = new WkbParser();
+						m_geom = parser.parseWkb((byte[])o);
+						o = Shape;
+					}
 
                     // *-----------------------------*
 
@@ -539,7 +544,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             }
             finally
             {
-                //log.leaveFunc();
+                log.leaveFunc();
             }
         }
 
@@ -556,9 +561,17 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
         }
 
+		/// <summary>
+		/// Get IEnvelope from feature (Paolo, march 2007)
+		/// </summary>
         public IEnvelope Extent
         {
-            get { throw new Exception("The method or operation is not implemented."); }
+            get 
+			{
+				return m_geom.Envelope;
+				//remove this exception, thrown from selections: feature envelope is needed
+				//throw new Exception("The method or operation is not implemented."); 
+			}
         }
 
         public esriFeatureType FeatureType { get { return postGisFeatureClass.FeatureType; } }
@@ -627,11 +640,25 @@ namespace ZigGis.ArcGIS.Geodatabase
         #endregion
 
         #region IFeatureDraw
+
+		/// <summary>
+		/// Draw feture (Paolo, march 2007)
+		/// </summary>
+		/// <param name="drawPhase"></param>
+		/// <param name="Display"></param>
+		/// <param name="Symbol"></param>
+		/// <param name="symbolInstalled"></param>
+		/// <param name="Geometry"></param>
+		/// <param name="DrawStyle"></param>
         public void Draw(esriDrawPhase drawPhase, IDisplay Display, ISymbol Symbol, bool symbolInstalled, IGeometry Geometry, esriDrawStyle DrawStyle)
         {
             // This if-statement might not be necessary.  The proper
             // filtering may have already occurred before this.
+
+			//Paolo : remove this filter, without it selection should work
+			/*
             if (!(drawPhase == esriDrawPhase.esriDPGeography && DrawStyle == esriDrawStyle.esriDSNormal)) return;
+			*/
 
             if (Shape == null) return;
 
@@ -1003,11 +1030,22 @@ namespace ZigGis.ArcGIS.Geodatabase
         ISelectionSet,
         ISelectionSet2
     {
+
+		/// <summary>
+		/// Create an empty SelectionSet
+		/// </summary>
+		/// <param name="postGisFeatureClass"></param>
         public PostGisSelectionSet(PostGisFeatureClass postGisFeatureClass) : this(postGisFeatureClass, null)
         {
 			System.Diagnostics.Debug.WriteLine("Empty PostGisSelectionSet...");
+			m_featClass = postGisFeatureClass;
         }
         
+		/// <summary>
+		/// Create a SelectionSet from a dataReader
+		/// </summary>
+		/// <param name="postGisFeatureClass"></param>
+		/// <param name="dataReader"></param>
         public PostGisSelectionSet(PostGisFeatureClass postGisFeatureClass, AutoDataReader dataReader)
         {
 			System.Diagnostics.Debug.WriteLine("NOT-Empty PostGisSelectionSet...");
@@ -1018,7 +1056,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             {
 				while (dataReader.Read())
 				{
-					oids.Add(dataReader[PostGisConstants.idField]);
+					oids.Add((object)dataReader[PostGisConstants.idField]);
 				}
 				dataReader.Close();
             }
@@ -1034,22 +1072,78 @@ namespace ZigGis.ArcGIS.Geodatabase
         public ArrayList oids { get { return m_oids; } }
 
         #region ISelectionSet
+
+		/// <summary>
+		/// Add an OID to the OIDS ISelectionSet
+		/// </summary>
+		/// <param name="OID"></param>
         public void Add(int OID)
         {
-            oids.Add((object)OID);
+            oids.Add(OID);
         }
 
-        // Todo - implement this.
+        /// <summary>
+		/// Add an OID list from the OIDS ISelectionSet (Paolo, march 2007)
+        /// </summary>
+        /// <param name="Count"></param>
+        /// <param name="OIDList"></param>
         public void AddList(int Count, ref int OIDList)
         {
+			//first let's clear the OIDS
+			oids.Clear();
+			int[] ids = ConvertUnmanagedArray(ref OIDList, Count);
+			for (int i = 0; i < Count; i++)
+			{
+				oids.Add((object)ids[i]);
+			}
         }
 
-        // Todo - implement this.
-        public void Combine(ISelectionSet otherSet, esriSetOperation setOp, out ISelectionSet resultSet)
+		/// <summary>
+		/// Combine selections (Paolo, march 2007)
+		/// </summary>
+		/// <param name="otherSet">current selectionset</param>
+		/// <param name="setOp">selection operation</param>
+		/// <param name="resultSet">output selectionset</param>
+		public void Combine(ISelectionSet otherSet, esriSetOperation setOp, out ISelectionSet resultSet)
         {
-            resultSet = null;
+			resultSet = this as ISelectionSet;
+			//esriSetUnion
+			IEnumIDs eids = otherSet.IDs;
+			for (int i = 0; i < otherSet.Count; i++)
+			{
+				int oid = eids.Next();
+				if (oids.Contains(oid)) //oid already in selectionset
+				{
+					if (setOp == esriSetOperation.esriSetDifference)
+					{
+						oids.Remove(oid);
+					}
+					if (setOp == esriSetOperation.esriSetSymDifference)
+					{
+						oids.Remove(oid);
+					}
+				}
+				else //oid not in selectionset
+				{
+					if (setOp == esriSetOperation.esriSetUnion)
+					{
+						oids.Add(oid);
+					}
+					if (setOp == esriSetOperation.esriSetIntersection)
+					{
+						oids.Remove(oid);
+					}
+					if (setOp == esriSetOperation.esriSetSymDifference)
+					{
+						oids.Add(oid);
+					}
+				}
+			}
         }
 
+		/// <summary>
+		/// Count selected OIDS
+		/// </summary>
         public int Count {get { return oids.Count; }}
 
         // I think this stays this way.  There's "not implemented" in the docs.
@@ -1068,35 +1162,83 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         // Todo - implement this.
         public void Refresh()
-        {
-			
+        {	
         }
 
-        // Todo - implement this.
+        /// <summary>
+        /// Remove an OID list from the OIDS ISelectionSet (Paolo, march 2007)
+        /// </summary>
+        /// <param name="Count"></param>
+        /// <param name="OIDList"></param>
         public void RemoveList(int Count, ref int OIDList)
         {
+			int[] ids = ConvertUnmanagedArray(ref OIDList, Count);
+			for (int i = 0; i < Count; i++)
+			{
+				oids.Remove((object)ids[i]);
+			}
         }
 
-        // Todo - implement this.
-        public void Search(IQueryFilter pQueryFilter, bool Recycling, out ICursor ppCursor)
-        {
-            ppCursor = null;
-        }
+		/// <summary>
+		/// Get an int[] array from an array pointer in unsafe code (Paolo, march 2007, thanks Abe!)
+		/// </summary>
+		/// <param name="arrayPointer"></param>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		unsafe protected static int[] ConvertUnmanagedArray(ref int
+arrayPointer, int size)
+		{
+			int[] managedArray = new int[size];
+			fixed (int* pArray = &arrayPointer)
+			{
+				for (int i = 0; i < size; ++i)
+					managedArray[i] = *(pArray + i);
+			}
+			return managedArray;
+		}
 
-        // Todo - implement this.
-        public ISelectionSet Select(IQueryFilter QueryFilter, esriSelectionType selType, esriSelectionOption selOption, IWorkspace selectionContainer)
-        {
-            return null;
-        }
+		/// <summary>
+		/// Generate a cursor from the selection set (Paolo, march 2007)
+		/// </summary>
+		/// <param name="pQueryFilter"></param>
+		/// <param name="Recycling"></param>
+		/// <param name="ppCursor"></param>
+		public void Search(IQueryFilter pQueryFilter, bool Recycling, out ICursor ppCursor)
+		{
+			//we need to include in the search only the oids from the selection
+			if (oids.Count > 0)
+			{
+				string where = PostGisConstants.idField + " in (";
+				for (int i = 0; i < oids.Count; i++)
+				{
+					where += oids[i].ToString();
+					if (i < oids.Count - 1)
+					{
+						where += ",";
+					}
+				}
+				where += ")";
+				pQueryFilter.WhereClause = where;
+			}
+			ITable pTable = m_featClass as ITable;
+			ppCursor =  pTable.Search(pQueryFilter, Recycling);
+		}
 
-        public ITable Target { get { return postGisFeatureClass; } }
-        #endregion
+		// Todo - implement this.
+		public ISelectionSet Select(IQueryFilter QueryFilter, esriSelectionType selType, esriSelectionOption selOption, IWorkspace selectionContainer)
+		{
+			return null;
+			//throw new NotImplementedException();
+		}
 
-        #region ISelectionSet2
-        public void Update(IQueryFilter pQueryFilter, bool Recycling, out ICursor ppCursor)
-        {
-            ppCursor = null;
-        }
-        #endregion
-    }
+		public ITable Target { get { return postGisFeatureClass; } }
+		#endregion
+
+		#region ISelectionSet2
+		public void Update(IQueryFilter pQueryFilter, bool Recycling, out ICursor ppCursor)
+		{
+			ppCursor = null;
+		}
+		#endregion
+	}
 }

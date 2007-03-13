@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("zigGIS")]
 [assembly: AssemblyDescription("zigGIS - PostGIS connector for Esri ArcMap")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Pulp Soft")]
+[assembly: AssemblyCompany("A.Gillespie, P.Corti, B.Dollins")]
 [assembly: AssemblyProduct("zigGIS")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.1.1.0")]
-[assembly: AssemblyFileVersion("1.1.1.0")]
+[assembly: AssemblyVersion("1.1.1.1")]
+[assembly: AssemblyFileVersion("1.1.1.1")]

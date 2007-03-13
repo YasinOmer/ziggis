@@ -1,6 +1,8 @@
 =zigGIS 1.1=
 developers: Abe Gillspie, Paolo Corti, Bill Dollins
 
+[http://code.google.com/p/ziggis http://portfolio.fringeblog.com/ill/zg-logo.jpg]
+
 PostGIS connector for ArcGIS
 zigGIS is an ArcGis plug-in that allows loading and viewing of PostGIS layers. The hope is to eventually get zigGIS so that it will also edit PostGIS layers.
 
@@ -11,6 +13,8 @@ this address:
 
 http://ziggis.googlecode.com/svn/
 
+The ZigGIS logo - designed by Jeremiah Lewis, a very good friend of Abe - represents the aim of zigGIS, an Open Source GIS package that span Open Source and commercial GIS database packages. Launch zig for great justice!
+
 ==If you want to install and try zigGIS in a while==
 
 People just interested in downloading and installing zigGIS can just download the installer, that can be found here:
@@ -19,6 +23,7 @@ http://ziggis.googlecode.com/svn/trunk/download/ZigGis11.zip
 
 Quick installation steps:
 
+zigGIS should correctly work with ArcGIS Desktop 9.0 (you must have esri service pach 3!), 9.1 and 9.2.
 zigGIS is developed with .NET 2.0 framework and ArcObject .NET assemblies, so you have to make sure you have both in the computer where you want to install zigGIS.
 After having checked and maybe installed both, you can finally install zigGIS.
 
@@ -57,6 +62,10 @@ Feel free to add any issue you get in if it is not in this list, or any request 
 For support and help please don't email us or post the help request in the PostGis or Esri forums, but use the zigGIS group: http://groups.google.com/group/ziggis
 
 ==RELEASE HISTORY==
+
+===13/03/2007, zigGIS 1.1.1.1===
+ * Added support for selecting features
+ * Document's persistence was repaired (in 1.1.1.0 and 1.1.0.20768 was broken)
 
 ===21/02/2007, zigGIS 1.1.1.0===
  * Added support for using zigGis for ArcObjects customisation (ArcMap VBA, Visual Basic 6...). 

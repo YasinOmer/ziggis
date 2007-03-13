@@ -35,6 +35,7 @@ namespace zigGISTester
 	{
 		IFeatureLayer layer;
 		IWorkspace ws;
+		IFeatureClass fc;
 
 		/// <summary>
 		/// Initialization code
@@ -59,7 +60,7 @@ namespace zigGISTester
 			ws = wksf.Open(ps, 0);
 			
 			IFeatureWorkspace fwks = ws as IFeatureWorkspace;
-			IFeatureClass fc = fwks.OpenFeatureClass("zone");
+			fc = fwks.OpenFeatureClass("zone");
 			// Create the new layer (default renderer is ISimpleRenderer)
 			layer = new PostGisFeatureLayer();
 			layer.FeatureClass = fc;
@@ -120,6 +121,18 @@ namespace zigGISTester
 				dsn = edsn.Next();
 				Assert.IsNotNull(dsn);
 			}
+		}
+
+		/// <summary>
+		/// Check selections on layer
+		/// </summary>
+		[Test]
+		public void CheckIFeatureSelection()
+		{
+			IQueryFilter qf = new QueryFilterClass();
+			qf.WhereClause = "";
+			ISelectionSet ss = fc.Select(qf, esriSelectionType.esriSelectionTypeIDSet, esriSelectionOption.esriSelectionOptionNormal, ws);
+			Assert.Greater(ss.Count, 0);
 		}
 	}
 }

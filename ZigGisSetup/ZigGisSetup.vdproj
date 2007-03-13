@@ -33,12 +33,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_08998991C4FF9AD9C5E9C73417AE778A"
-        "OwnerKey" = "8:_CADA8D7D8CDF4306B14BCF0E8FDAFB2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0FC2EF75EC2256D8AF81662763D38EFD"
         "OwnerKey" = "8:_3D8F0EF95FFA49B912E4EE1F6F5CF62C"
         "MsmSig" = "8:_UNDEFINED"
@@ -101,6 +95,12 @@
         {
         "MsmKey" = "8:_17C4ED407486064285CCD8B4A722F7E8"
         "OwnerKey" = "8:_2A69F3C7FAB298440DEEEC11E73A19AF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_29BE99B242D01A94CBA596F70823B565"
+        "OwnerKey" = "8:_CADA8D7D8CDF4306B14BCF0E8FDAFB2C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -297,7 +297,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4923016BD6DAF1E054A6F8DF1491F165"
+        "MsmKey" = "8:_4F21ADD97BEFE22D3264215C8A68DD74"
+        "OwnerKey" = "8:_CADA8D7D8CDF4306B14BCF0E8FDAFB2C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5DE22A7750B1F0842ACA9C2F718A689D"
         "OwnerKey" = "8:_CADA8D7D8CDF4306B14BCF0E8FDAFB2C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -561,12 +567,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DA2199B83EA5E6D22925D1FC7F9C2799"
-        "OwnerKey" = "8:_CADA8D7D8CDF4306B14BCF0E8FDAFB2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_E64BF8707991B68B32DB81A87E7F0A22"
         "OwnerKey" = "8:_2A69F3C7FAB298440DEEEC11E73A19AF"
         "MsmSig" = "8:_UNDEFINED"
@@ -610,13 +610,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4923016BD6DAF1E054A6F8DF1491F165"
+        "OwnerKey" = "8:_5DE22A7750B1F0842ACA9C2F718A689D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DA2199B83EA5E6D22925D1FC7F9C2799"
+        "OwnerKey" = "8:_4F21ADD97BEFE22D3264215C8A68DD74"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -875,26 +875,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_08998991C4FF9AD9C5E9C73417AE778A"
-            {
-            "SourcePath" = "8:Pulp.ArcGis.ZigGis.Button.tlb"
-            "TargetName" = "8:Pulp.ArcGis.ZigGis.Button.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_7B30D181D96C4F75BA7B1667AC0DD958"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0FC2EF75EC2256D8AF81662763D38EFD"
             {
             "AssemblyRegister" = "3:1"
@@ -985,6 +965,26 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_29BE99B242D01A94CBA596F70823B565"
+            {
+            "SourcePath" = "8:ZigGis.tlb"
+            "TargetName" = "8:ZigGis.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_7B30D181D96C4F75BA7B1667AC0DD958"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -1174,14 +1174,45 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4923016BD6DAF1E054A6F8DF1491F165"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4F21ADD97BEFE22D3264215C8A68DD74"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_4F21ADD97BEFE22D3264215C8A68DD74"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:log4net.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7B30D181D96C4F75BA7B1667AC0DD958"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5DE22A7750B1F0842ACA9C2F718A689D"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Nini, Version=1.1.0.0, Culture=neutral, PublicKeyToken=691faec150a7fa7b, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4923016BD6DAF1E054A6F8DF1491F165"
+                    "_5DE22A7750B1F0842ACA9C2F718A689D"
                     {
                     "Name" = "8:Nini.dll"
                     "Attributes" = "3:512"
@@ -1482,37 +1513,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DA2199B83EA5E6D22925D1FC7F9C2799"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_DA2199B83EA5E6D22925D1FC7F9C2799"
-                    {
-                    "Name" = "8:log4net.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:log4net.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7B30D181D96C4F75BA7B1667AC0DD958"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E64BF8707991B68B32DB81A87E7F0A22"
             {
             "AssemblyRegister" = "3:1"
@@ -1603,7 +1603,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_7B30D181D96C4F75BA7B1667AC0DD958"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -1640,7 +1640,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ZigGis"
         "ProductCode" = "8:{4E6149D2-0C63-4566-BE19-B16B18538B3C}"
-        "PackageCode" = "8:{D082ABAE-EDE3-4EA4-895E-47D0AD2EE64C}"
+        "PackageCode" = "8:{53B98021-2DC3-4F66-BAD0-22F4071C5CC0}"
         "UpgradeCode" = "8:{93B851EB-C43B-48CA-80D6-10813F560F9F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -2160,7 +2160,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CADA8D7D8CDF4306B14BCF0E8FDAFB2C"
             {
-            "SourcePath" = "8:..\\ZigGis\\obj\\Release\\Pulp.ArcGis.ZigGis.Button.dll"
+            "SourcePath" = "8:..\\ZigGis\\obj\\Debug\\ZigGis.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7B30D181D96C4F75BA7B1667AC0DD958"
