@@ -98,7 +98,9 @@
     <Compile Include="logger.cs" />
     <Compile Include="postgis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Renderers.cs" />
     <Compile Include="stream_helper.cs" />
+    <Compile Include="TestCode.cs" />
     <Compile Include="Tester.cs" />
     <Compile Include="UI\add_form.cs">
       <SubType>Form</SubType>
@@ -126,6 +128,7 @@
     <EmbeddedResource Include="images\ogc_sm.bmp" />
     <EmbeddedResource Include="images\pgsql_lrg.bmp" />
     <EmbeddedResource Include="images\pgsql_sm.bmp" />
+    <Content Include="images\ziggis.jpg" />
     <Content Include="license.txt" />
     <Content Include="notes.txt" />
     <Content Include="readme.txt" />

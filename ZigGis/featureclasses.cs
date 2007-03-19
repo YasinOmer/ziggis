@@ -47,13 +47,18 @@ namespace ZigGis.ArcGIS.Geodatabase
     // Perhaps we need to implement IFeatureEdit to have this editable?
     [Guid("82CF1A49-7D1B-453f-8DFF-33808C737E73"), ClassInterface(ClassInterfaceType.None)]
     public class PostGisFeatureClass :
+		//IClass, //Paolo
+		IDataset,
+		IDatasetEdit,
+		IDatasetEditInfo,
         IFeatureClass,
+		IFeatureDraw, //Paolo
+		IGeoDataset,
+		//IModelInfo, //Paolo
+		//IObjectClass, //Paolo
         ITable,
-        IDataset,
-        IDatasetEditInfo,
-        IGeoDataset,
-        ITableCapabilities,
-        IDatasetEdit
+        ITableCapabilities
+        
     {
         static private readonly CLogger log = new CLogger(typeof(PostGisFeatureClass));
         
@@ -183,12 +188,24 @@ namespace ZigGis.ArcGIS.Geodatabase
             return i;
         }
 
+		//Paolo (march 2007): we need to get the geometry field in the usual manner
         public IFeature GetFeature(int ID)
         {
             log.enterFunc("GetFeature");
             
+			/* old: wrong
             IDataRecord rec = postGisLayer.getRecord(ID);
             return new PostGisFeature(this, rec);
+			*/
+			
+			//SELECT * where gid = 12
+			string fields;
+			string where;
+			IQueryFilter qf = new QueryFilterClass();
+			qf.WhereClause = PostGisConstants.idField.ToString() + "=" + ID.ToString();
+			GeomHelper.aoQryToPostGisQry(qf, postGisLayer, out fields, out where);
+			IDataRecord rec = postGisLayer.getRecord(fields, where);
+			return new PostGisFeature(this, rec);
         }
 
         public IFeatureCursor GetFeatures(object fids, bool Recycling)
@@ -438,7 +455,13 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public esriDatasetType Type {get { return FeatureDataset.Type; }}
 
-        public IWorkspace Workspace {get { return FeatureDataset.Workspace; }}
+        public IWorkspace Workspace 
+		{
+			get 
+			{ 
+				return FeatureDataset.Workspace; 
+			}
+		}
         #endregion
 
         #region IDatasetEditInfo
@@ -481,7 +504,201 @@ namespace ZigGis.ArcGIS.Geodatabase
             return m_beingEdited;
         }
         #endregion
-    }
+
+		#region IFeatureDraw
+
+		void IFeatureDraw.Draw(esriDrawPhase drawPhase, IDisplay Display, ISymbol symbol, bool symbolInstalled, IGeometry Geometry, esriDrawStyle drawStyle)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		IInvalidArea IFeatureDraw.InvalidArea
+		{
+			get
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+			set
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+		}
+
+		#endregion
+
+		/*
+
+		#region IClass
+
+		void IClass.AddField(IField Field)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		void IClass.AddIndex(IIndex Index)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		UID IClass.CLSID
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		void IClass.DeleteField(IField Field)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		void IClass.DeleteIndex(IIndex Index)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		UID IClass.EXTCLSID
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		object IClass.Extension
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		IPropertySet IClass.ExtensionProperties
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		IFields IClass.Fields
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		int IClass.FindField(string Name)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		bool IClass.HasOID
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		IIndexes IClass.Indexes
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		string IClass.OIDFieldName
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		#endregion
+	
+		#region IObjectClass
+
+		void  IObjectClass.AddField(IField Field)
+		{
+ 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		void  IObjectClass.AddIndex(IIndex Index)
+		{
+ 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		string  IObjectClass.AliasName
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		UID  IObjectClass.CLSID
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		void  IObjectClass.DeleteField(IField Field)
+		{
+ 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		void  IObjectClass.DeleteIndex(IIndex Index)
+		{
+ 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		UID  IObjectClass.EXTCLSID
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		object  IObjectClass.Extension
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		IPropertySet  IObjectClass.ExtensionProperties
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		IFields  IObjectClass.Fields
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		int  IObjectClass.FindField(string Name)
+		{
+ 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		bool  IObjectClass.HasOID
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		IIndexes  IObjectClass.Indexes
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		string  IObjectClass.OIDFieldName
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		int  IObjectClass.ObjectClassID
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		IEnumRelationshipClass  IObjectClass.get_RelationshipClasses(esriRelRole role)
+		{
+ 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+		
+
+		#region IModelInfo Members
+
+		public string ModelName
+		{
+			get
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+			set
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+		}
+
+		#endregion
+		*/
+	}
 
     [Guid("40D05FB9-6063-41d7-A2F5-68197D9BB545"), ClassInterface(ClassInterfaceType.None)]
     public class PostGisFeature :
@@ -670,11 +887,16 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
             get
             {
-                throw new Exception("The method or operation is not implemented.");
+				//not sure about this (Paolo)
+				/*
+				IInvalidArea ia = new InvalidAreaClass();
+				ia.Add(m_geom);
+				*/
+				return InvalidArea;
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                InvalidArea = value;
             }
         }
         #endregion
@@ -777,7 +999,10 @@ namespace ZigGis.ArcGIS.Geodatabase
     }
 
     [Guid("CC5C6470-97C2-4249-8438-FF5BA9131D02"), ClassInterface(ClassInterfaceType.None)]
-    public class PostGisFields : IFields
+    public class PostGisFields : 
+		IFields,
+		IFields2, //Paolo (without this rendering do not work)
+		IFieldsEdit //Paolo
     {
         static private readonly CLogger log = new CLogger(typeof(PostGisFields));
         
@@ -859,10 +1084,52 @@ namespace ZigGis.ArcGIS.Geodatabase
             return retVal;
         }
         #endregion
-    }
+
+		#region IFields2 Members
+
+
+		public void FindFieldIgnoreQualification(ISQLSyntax sqlSyntax, string Name, out int Index)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+
+		#region IFieldsEdit Members
+
+		public void AddField(IField Field)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void DeleteAllFields()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void DeleteField(IField Field)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public int FieldCount_2
+		{
+			set { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		public void set_Field(int Index, IField __p2)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+	}
 
     [Guid("65C0A853-C2CF-4182-B70F-9AF435486716"), ClassInterface(ClassInterfaceType.None)]
-    public class PostGisField : IField
+    public class PostGisField : 
+		IField,
+		IField2, //Paolo
+		IModelInfo //Paolo
     {
         public PostGisField(Layer postGisLayer, DataRow row, int id)
         {
@@ -1023,7 +1290,32 @@ namespace ZigGis.ArcGIS.Geodatabase
             }
         }
         #endregion
-    }
+
+		#region IField2
+
+		public IRasterDef RasterDef
+		{
+			get { throw new Exception("The method or operation is not implemented."); }
+		}
+
+		#endregion
+
+		#region IModelInfo
+
+		public string ModelName
+		{
+			get
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+			set
+			{
+				throw new Exception("The method or operation is not implemented.");
+			}
+		}
+
+		#endregion
+	}
 
     [Guid("C9AA8D6E-9706-42a9-A400-D74B1C664A07"), ClassInterface(ClassInterfaceType.None)]
     public class PostGisSelectionSet :

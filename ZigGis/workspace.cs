@@ -824,7 +824,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public IName FullName { get { return PostGisWorkspaceName;}}
 
-        public string Name { get { return "Todo - implement";}}
+        public string Name { get { return "PostGis Workspace (Read Only)";}}
 
         public IPropertySet PropertySet { get { return PostGisWorkspaceName.ConnectionProperties; } }
 
@@ -1029,7 +1029,7 @@ namespace ZigGis.ArcGIS.Geodatabase
     {
         private PostGisDatasetName [] pgdsn; //array to store dataset names
         private Connection m_conn; //connection to postgis
-        private int layerIndex = 0; //counter for enumeration
+        private int layerIndex = -1; //counter for enumeration
 		private int layerCount; //layer counter
 
 		/// <summary>

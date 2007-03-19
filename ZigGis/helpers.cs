@@ -316,6 +316,7 @@ namespace ZigGis.Utilities
 			// We want to load every field so we can easily
 			// interoperate with the rest of the framework.
 			// However, load nulls for the fields that aren't specified.
+
 			log.enterFunc("aoFieldsToPostGisFields");
 			bool loadAll = (fields == "*");
 			log.Debug("outSrid = " + outSrid.ToString());
@@ -323,7 +324,7 @@ namespace ZigGis.Utilities
 			string[] fieldArray = fields.Split(',');
 			Hashtable fieldMap = new Hashtable(fieldArray.Length);
 			foreach (string f in fieldArray)
-				fieldMap.Add(f.ToLower(), true);  // Use a dummy value.
+				fieldMap.Add(f.ToLower().Trim(), true);  // Use a dummy value. (Paolo: I added a Trim)
 			string name;
 			bool load;
 			StringBuilder sb = new StringBuilder();
@@ -345,7 +346,9 @@ namespace ZigGis.Utilities
 				if (name == postGisLayer.geometryField)
 					name = postGisLayer.transformGeometryFieldAsBinary(outSrid) + " as " + name;
 				else if (!load)
+				{
 					sb.Append("null as ");
+				}
 
 				sb.Append(name);
 				sb.Append(",");

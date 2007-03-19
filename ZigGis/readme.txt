@@ -63,8 +63,9 @@ For support and help please don't email us or post the help request in the PostG
 
 ==RELEASE HISTORY==
 
-===13/03/2007, zigGIS 1.1.1.1===
- * Added support for selecting features
+===19/03/2007, zigGIS 1.2.0.0===
+ * Added support for selection
+ * All of the symbology renderers are now working
  * Document's persistence was repaired (in 1.1.1.0 and 1.1.0.20768 was broken)
 
 ===21/02/2007, zigGIS 1.1.1.0===

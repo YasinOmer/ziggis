@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using ZigGis.Utilities;
+using ZigGis.ArcGIS.Carto;
+
 
 #if ARCGIS_8X
 using ESRI.ArcObjects.Core;
@@ -33,8 +35,9 @@ namespace ZigGis.ArcGIS.Geodatabase
         IFeatureLayer,
         IFeatureLayer2,
         IFeatureLayerDefinition,
-		IFeatureLayerSelectionEvents, //Paolo
+		//IFeatureLayerDefinition2, //Paolo
         IFeatureSelection,
+		IFeatureLayerSelectionEvents, //Paolo
         IFind,
         IGeoDataset,
         IGeoFeatureLayer,
@@ -50,8 +53,10 @@ namespace ZigGis.ArcGIS.Geodatabase
         ILayerExtensions,
 		ILayerEvents, //Paolo
         ILayerFields,
+		//ILayerGeneralProperties, //Paolo
         ILayerInfo,
         ILayerPosition,
+		//ILayerSymbologyExtents, //Paolo
         ILegendInfo,
         IMapLevel,
         IObjectClassSchemaEvents,
@@ -60,10 +65,13 @@ namespace ZigGis.ArcGIS.Geodatabase
         IPublishLayer,
         IRelationshipClassCollection,
         IRelationshipClassCollectionEdit,
+		//ISymbolLevels, //Paolo
         ITable,
         ITableDefinition,
         ITableFields,
         ITableSelection
+		//ITemporaryLayer //Paolo
+
     {
         private IFeatureLayer m_layer = new FeatureLayer();
         protected IFeatureLayer featureLayer { get { return m_layer; } }
@@ -549,8 +557,8 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
 
-        #region ILayer
-        IEnvelope ILayer.AreaOfInterest
+		#region ILayer
+		IEnvelope ILayer.AreaOfInterest
         {
             get { return ((ILayer)featureLayer).AreaOfInterest; }
         }
@@ -569,7 +577,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         void ILayer.Draw(esriDrawPhase drawPhase, IDisplay Display, ITrackCancel trackCancel)
         {
-            ((ILayer)featureLayer).Draw(drawPhase, Display, trackCancel);
+			((ILayer)featureLayer).Draw(drawPhase, Display, trackCancel);
         }
 
         double ILayer.MaximumScale
@@ -836,7 +844,6 @@ namespace ZigGis.ArcGIS.Geodatabase
         {
             get
             {
-				//continuosly called from ArcMap
                 return ((IFeatureSelection)featureLayer).SelectionSet;
             }
             set
@@ -1060,7 +1067,7 @@ namespace ZigGis.ArcGIS.Geodatabase
             }
             set
             {
-                ((IGeoFeatureLayer)featureLayer).Renderer = value;
+				((IGeoFeatureLayer)featureLayer).Renderer = value;
             }
         }
 
@@ -1717,8 +1724,9 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
 
-        #region ITable
-        void ITable.AddField(IField Field)
+
+		#region ITable
+		void ITable.AddField(IField Field)
         {
             ((ITable)featureLayer).AddField(Field);
         }
@@ -1913,5 +1921,124 @@ namespace ZigGis.ArcGIS.Geodatabase
             }
         }
         #endregion
-    }
+
+		/*
+		#region ISymbolLevels
+
+		bool ISymbolLevels.UseSymbolLevels
+		{
+			get
+			{
+				return ((ISymbolLevels)featureLayer).UseSymbolLevels;
+			}
+			set
+			{
+				((ISymbolLevels)featureLayer).UseSymbolLevels = value;
+			}
+		}
+
+		#endregion
+
+		#region ITemporaryLayer
+
+		bool ITemporaryLayer.Temporary
+		{
+			get
+			{
+				return ((ITemporaryLayer)featureLayer).Temporary;
+			}
+			set
+			{
+				((ITemporaryLayer)featureLayer).Temporary = value;
+			}
+		}
+
+		#endregion
+
+		#region ILayerSymbologyExtents
+
+		void ILayerSymbologyExtents.ExpandRegionForSymbols(IDisplay pDisplay, IGeometry pRegion)
+		{
+			((ILayerSymbologyExtents)featureLayer).ExpandRegionForSymbols(pDisplay, pRegion);
+		}
+
+		#endregion
+
+		#region IFeatureLayerDefinition2
+
+		IFeatureLayer IFeatureLayerDefinition2.CreateSelectionLayer(string LayerName, bool useCurrentSelection, string joinTableNames, string Expression)
+		{
+			return ((IFeatureLayerDefinition2)featureLayer).CreateSelectionLayer(LayerName, useCurrentSelection, joinTableNames, Expression);
+		}
+
+		string IFeatureLayerDefinition2.DefinitionExpression
+		{
+			get
+			{
+				return ((IFeatureLayerDefinition2)featureLayer).DefinitionExpression;
+			}
+			set
+			{
+				((IFeatureLayerDefinition2)featureLayer).DefinitionExpression = value;
+			}
+		}
+
+		ISelectionSet IFeatureLayerDefinition2.DefinitionSelectionSet
+		{
+			get { return ((IFeatureLayerDefinition2)featureLayer).DefinitionSelectionSet; }
+		}
+
+		IRelationshipClass IFeatureLayerDefinition2.RelationshipClass
+		{
+			get
+			{
+				return ((IFeatureLayerDefinition2)featureLayer).RelationshipClass;
+			}
+			set
+			{
+				((IFeatureLayerDefinition2)featureLayer).RelationshipClass = value;
+			}
+		}
+
+		esriSearchOrder IFeatureLayerDefinition2.SearchOrder
+		{
+			get
+			{
+				return ((IFeatureLayerDefinition2)featureLayer).SearchOrder;
+			}
+			set
+			{
+				((IFeatureLayerDefinition2)featureLayer).SearchOrder = value;
+			}
+		}
+
+		#endregion
+
+		#region ILayerGeneralProperties
+
+		double ILayerGeneralProperties.LastMaximumScale
+		{
+			get { return ((ILayerGeneralProperties)featureLayer).LastMaximumScale; }
+		}
+
+		double ILayerGeneralProperties.LastMinimumScale
+		{
+			get { return ((ILayerGeneralProperties)featureLayer).LastMinimumScale; }
+		}
+
+		string ILayerGeneralProperties.LayerDescription
+		{
+			get
+			{
+				return ((ILayerGeneralProperties)featureLayer).LayerDescription;
+			}
+			set
+			{
+				((ILayerGeneralProperties)featureLayer).LayerDescription = value;
+			}
+		}
+
+		#endregion
+		*/
+	}
 }
