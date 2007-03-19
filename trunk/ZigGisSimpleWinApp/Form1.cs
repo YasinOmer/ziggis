@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using net.paolocorti.Esri.ArcObjects.Samples.Rendering;
+
 using ZigGis.ArcGIS.Geodatabase;
 using zigGISTester.Utilities;
 using ESRI.ArcGIS.Geodatabase;
@@ -26,8 +28,8 @@ namespace ZigGisSimpleWinApp
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			//LoadPostGisLayer();
-			LoadShapefile();
+			LoadPostGisLayer();
+			//LoadShapefile();
 		}
 
 		/// <summary>
@@ -39,8 +41,9 @@ namespace ZigGisSimpleWinApp
 			IWorkspaceFactory wksf = new PostGisWorkspaceFactory();
 
 			//Open from zig file
-			//IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(@"C:\ziggis\ZigGis\example.zig", 0);
+			IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.OpenFromFile(@"C:\ziggis\ZigGis\example2.zig", 0);
 
+			/*
 			//Open from PropertySet
 			IPropertySet ps = new PropertySetClass();
 			ps.SetProperty("server", "localhost");
@@ -50,19 +53,22 @@ namespace ZigGisSimpleWinApp
 			ps.SetProperty("port", "5432");
 			ps.SetProperty("configfile", @"C:\ziggis\ZigGis\logging.config");
 			IFeatureWorkspace fwks = (IFeatureWorkspace)wksf.Open(ps, 0);
+			*/
 
-			IFeatureClass fc = fwks.OpenFeatureClass("zone");
+			IFeatureClass fc = fwks.OpenFeatureClass("paolo.canada");
 			// Create the new layer (default renderer is ISimpleRenderer)
 			IFeatureLayer layer = new PostGisFeatureLayer();
 			layer.FeatureClass = fc;
 			layer.Name = fc.AliasName;
 			ILayer ly = layer as ILayer;
 			IGeoFeatureLayer gfl = layer as IGeoFeatureLayer;
-			doSimpleRenderer(gfl);
-			SelectFeaturesFromFeatureClass(fc, fwks as IWorkspace);
-			//SelectFeaturesFromFeatureLayer(layer);
-			//doUniqueValueRenderer(gfl);
+			//doSimpleRenderer(gfl);
+			doUniqueValueRenderer(gfl);
+			//IFeatureRenderer fr = new VerySimpleCustomRenderer();
+			//gfl.Renderer = fr;
 			axMapControl1.AddLayer(gfl as ILayer, 0);
+			//SelectFeaturesFromFeatureClass(fc, fwks as IWorkspace);
+			//SelectFeaturesFromFeatureLayer(layer);
 		}
 
 		/// <summary>
@@ -71,14 +77,16 @@ namespace ZigGisSimpleWinApp
 		private void LoadShapefile()
 		{
 			IWorkspaceFactory wf = new ShapefileWorkspaceFactoryClass();
-			IFeatureWorkspace fw = (IFeatureWorkspace)wf.OpenFromFile(@"C:\training\testData", 0);
-			IFeatureClass fc = fw.OpenFeatureClass("zone");
+			IFeatureWorkspace fw = (IFeatureWorkspace)wf.OpenFromFile(@"C:\data", 0);
+			IFeatureClass fc = fw.OpenFeatureClass("canada");
 			IFeatureLayer layer = new FeatureLayerClass();
 			layer.FeatureClass = fc;
 			layer.Name = fc.AliasName;
-			SelectFeaturesFromFeatureLayer(layer);
-			SelectFeaturesFromFeatureClass(fc, fw as IWorkspace);
+			//SelectFeaturesFromFeatureLayer(layer);
+			//SelectFeaturesFromFeatureClass(fc, fw as IWorkspace);
 			axMapControl1.AddLayer(layer as ILayer, 0);
+			IGeoFeatureLayer gfl = layer as IGeoFeatureLayer;
+			doUniqueValueRenderer(gfl);
 		}
 
 		private void SelectFeaturesFromFeatureLayer(IFeatureLayer fl)

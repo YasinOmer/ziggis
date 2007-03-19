@@ -1,8 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using ZigGis.ArcGIS.Geodatabase;
 using System.Runtime.InteropServices;
+
+using ZigGis.ArcGIS.Geodatabase;
+using net.paolocorti.Esri.ArcObjects.Samples.Rendering;
 
 #if ARCGIS_8X
 using ESRI.ArcObjects.Core;
@@ -12,6 +14,7 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.SystemUI;
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Framework;
+using ESRI.ArcGIS.Display;
 #endif
 
 namespace ZigGis.ArcGIS.ArcMapUI
@@ -83,6 +86,30 @@ namespace ZigGis.ArcGIS.ArcMapUI
 					{
 						IFeatureClass fc = fwks.OpenFeatureClass(layerToAdd);
 						IFeatureLayer layer = new PostGisFeatureLayer();
+						//IFeatureLayer layer = new FeatureLayerClass();
+
+						IGeoFeatureLayer gfl = layer as IGeoFeatureLayer;
+						/* 
+						// Paolo - remove this
+						IFeatureRenderer fr = new VerySimpleCustomRenderer();
+						gfl.Renderer = fr;
+						//end of sample....
+						*/
+
+						/*
+						//COD (101,103...)
+						IUniqueValueRenderer uvr = new CustomUniqueValueRenderer();
+						uvr.FieldCount = 1;
+						uvr.set_Field(0, "code");
+						uvr.DefaultSymbol = (ISymbol)CreateSimpleFillSymbol(0, 0, 255);
+						uvr.UseDefaultSymbol = true;
+						//add values
+						uvr.AddValue("CA06", "CA06", (ISymbol)CreateSimpleFillSymbol(255, 0, 0));
+						uvr.AddValue("CA05", "CA05", (ISymbol)CreateSimpleFillSymbol(0, 255, 0));
+						//render
+						gfl.Renderer = (IFeatureRenderer)uvr;
+						*/
+
 						layer.FeatureClass = fc;
 						layer.Name = fc.AliasName;
 						// Add the new layer.

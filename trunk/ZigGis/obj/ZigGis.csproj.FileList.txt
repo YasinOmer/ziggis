@@ -25,3 +25,13 @@ bin\Debug\log4net.dll
 bin\Debug\Nini.dll
 bin\Release\log4net.dll
 bin\Release\Nini.dll
+obj\Debug\ZigGis.ArcGIS.ArcMapUI.PostGisConnectionForm.resources
+obj\Debug\Pulp.ArcGis.ZigGis.images.ogc_lrg.bmp
+obj\Debug\Pulp.ArcGis.ZigGis.images.ogc_sm.bmp
+obj\Debug\Pulp.ArcGis.ZigGis.images.pgsql_lrg.bmp
+obj\Debug\Pulp.ArcGis.ZigGis.images.pgsql_sm.bmp
+obj\Release\Pulp.ArcGis.ZigGis.images.ogc_lrg.bmp
+obj\Release\Pulp.ArcGis.ZigGis.images.ogc_sm.bmp
+obj\Release\Pulp.ArcGis.ZigGis.images.pgsql_lrg.bmp
+obj\Release\Pulp.ArcGis.ZigGis.images.pgsql_sm.bmp
+obj\Release\ZigGis.ArcGIS.ArcMapUI.PostGisConnectionForm.resources

@@ -169,6 +169,16 @@ namespace ZigGis.PostGis
             return dr;
         }
 
+		// Paolo (Returns the record for the given Id with corrected geometry)
+		public IDataRecord getRecord(string fields, string where)
+		{
+			string sql = DbHelper.createSelectSql(schemaAndView, fields, where);
+			AutoDataReader dr = connection.doQuery(sql);
+			if (!dr.Read())
+				dr = null;
+			return dr;
+		}
+
         // Returns the fields for the table of this layer.
         private DataTable m_fields = null;
         public DataTable getDataFields(bool reloadFromDatabase)

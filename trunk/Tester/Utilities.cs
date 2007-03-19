@@ -18,6 +18,8 @@ using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.esriSystem;
 
+using net.paolocorti.Esri.ArcObjects.Samples.Rendering;
+
 namespace zigGISTester.Utilities
 {
 	public class TesterUtilities
@@ -32,14 +34,14 @@ namespace zigGISTester.Utilities
 		public static void ApplyUniqueValueRenderer(IGeoFeatureLayer fl)
 		{
 			//COD (101,103...)
-			IUniqueValueRenderer uvr = new UniqueValueRendererClass();
+			IUniqueValueRenderer uvr = new CustomUniqueValueRenderer(); // UniqueValueRendererClass();
 			uvr.FieldCount = 1;
-			uvr.set_Field(0, "COD");
+			uvr.set_Field(0, "code");
 			uvr.DefaultSymbol = (ISymbol)CreateSimpleFillSymbol(0, 0, 255);
 			uvr.UseDefaultSymbol = true;
 			//add values
-			uvr.AddValue("101", "101", (ISymbol)CreateSimpleFillSymbol(255, 0, 0));
-			uvr.AddValue("103", "103", (ISymbol)CreateSimpleFillSymbol(0, 255, 0));
+			uvr.AddValue("CA01", "CA01", (ISymbol)CreateSimpleFillSymbol(255, 0, 0));
+			uvr.AddValue("CA02", "CA02", (ISymbol)CreateSimpleFillSymbol(0, 255, 0));
 			//render
 			fl.Renderer = (IFeatureRenderer)uvr;
 		}
