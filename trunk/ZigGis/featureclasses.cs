@@ -52,7 +52,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 		IDatasetEdit,
 		IDatasetEditInfo,
         IFeatureClass,
-		IFeatureDraw, //Paolo
+		//IFeatureDraw, //Paolo
 		IGeoDataset,
 		//IModelInfo, //Paolo
 		//IObjectClass, //Paolo
@@ -505,6 +505,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
 
+		/*
 		#region IFeatureDraw
 
 		void IFeatureDraw.Draw(esriDrawPhase drawPhase, IDisplay Display, ISymbol symbol, bool symbolInstalled, IGeometry Geometry, esriDrawStyle drawStyle)
@@ -523,8 +524,8 @@ namespace ZigGis.ArcGIS.Geodatabase
 				throw new Exception("The method or operation is not implemented.");
 			}
 		}
-
 		#endregion
+		*/
 
 		/*
 
@@ -892,7 +893,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 				IInvalidArea ia = new InvalidAreaClass();
 				ia.Add(m_geom);
 				*/
-				return InvalidArea;
+				return null;
             }
             set
             {
@@ -1001,8 +1002,8 @@ namespace ZigGis.ArcGIS.Geodatabase
     [Guid("CC5C6470-97C2-4249-8438-FF5BA9131D02"), ClassInterface(ClassInterfaceType.None)]
     public class PostGisFields : 
 		IFields,
-		IFields2, //Paolo (without this rendering do not work)
-		IFieldsEdit //Paolo
+		IFields2 //Paolo (without this rendering do not work)
+		//IFieldsEdit //Paolo
     {
         static private readonly CLogger log = new CLogger(typeof(PostGisFields));
         
@@ -1043,6 +1044,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         private Hashtable m_ids;
         private Hashtable idMap { get { return m_ids; } }
+
 
         #region IFields
         public int FieldCount { get { return fields.Length; } }
@@ -1085,6 +1087,8 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
 
+		
+
 		#region IFields2 Members
 
 
@@ -1095,6 +1099,8 @@ namespace ZigGis.ArcGIS.Geodatabase
 
 		#endregion
 
+		/*
+		
 		#region IFieldsEdit Members
 
 		public void AddField(IField Field)
@@ -1123,13 +1129,14 @@ namespace ZigGis.ArcGIS.Geodatabase
 		}
 
 		#endregion
+		*/
 	}
 
     [Guid("65C0A853-C2CF-4182-B70F-9AF435486716"), ClassInterface(ClassInterfaceType.None)]
     public class PostGisField : 
-		IField,
-		IField2, //Paolo
-		IModelInfo //Paolo
+		IField
+		//IField2, //Paolo
+		//IModelInfo //Paolo
     {
         public PostGisField(Layer postGisLayer, DataRow row, int id)
         {
@@ -1291,6 +1298,7 @@ namespace ZigGis.ArcGIS.Geodatabase
         }
         #endregion
 
+		/*
 		#region IField2
 
 		public IRasterDef RasterDef
@@ -1315,6 +1323,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 		}
 
 		#endregion
+		*/
 	}
 
     [Guid("C9AA8D6E-9706-42a9-A400-D74B1C664A07"), ClassInterface(ClassInterfaceType.None)]

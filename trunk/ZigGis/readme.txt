@@ -67,6 +67,7 @@ For support and help please don't email us or post the help request in the PostG
  * Added support for selection
  * All of the symbology renderers are now working
  * Document's persistence was repaired (in 1.1.1.0 and 1.1.0.20768 was broken)
+ * Work for Postgis ArcCatalog object has started (thanks Bill!). You will now find in ArcCatalog a pretty "OGC Database Connection" node. From there it will be possible to create the OGC connection, for now only PostGIS ("Add new PostGis connection"), but maybe in the future also for other OGC db (Oracle Spatial, MySQL Spatial...). The tool is still not working, at this release, but gives an idea of what zigGis will become in the next releases.
 
 ===21/02/2007, zigGIS 1.1.1.0===
  * Added support for using zigGis for ArcObjects customisation (ArcMap VBA, Visual Basic 6...). 
