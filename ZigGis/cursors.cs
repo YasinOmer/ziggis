@@ -74,10 +74,12 @@ namespace ZigGis.ArcGIS.Geodatabase
         public IFeature NextFeature()
         {
             IFeature retVal = null;
-            if (dataReader.Read())
-                retVal = new PostGisFeature(postGisFeatureClass, dataReader);
-            else
-                Helper.signalEndOfEnum();
+			if (dataReader.Read())
+				retVal = new PostGisFeature(postGisFeatureClass, dataReader);
+			else
+			{
+				Helper.signalEndOfEnum();
+			}
 
             return retVal;
         }
@@ -139,7 +141,6 @@ namespace ZigGis.ArcGIS.Geodatabase
                 {
                     log.Debug("End of enum.");
                     Helper.signalEndOfEnum();
-					//retVal = -1;
                 }
             }
             finally
