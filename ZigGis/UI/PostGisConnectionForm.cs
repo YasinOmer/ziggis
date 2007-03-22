@@ -1,3 +1,5 @@
+using Nini.Config;
+using Nini.Ini;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +24,34 @@ namespace ZigGis.ArcGIS.ArcMapUI
         {
             InitializeComponent();
             SetWindowLong(this.Handle.ToInt32(), -8, ownerHwnd);
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private bool saveZigFile()
+        {
+            bool retVal = false;
+            try
+            {
+                IniConfigSource source = new IniConfigSource();
+                //System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                IConfig config = source.AddConfig("connection");
+                config.Set("Debug", "false");
+                config.Set("Logging", "On");
+
+                config = source.AddConfig("logging");
+                config.Set("FilePath", "C:\\temp\\MyApp.log");
+
+                source.Save("MyApp.ini"); 
+                return retVal;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
