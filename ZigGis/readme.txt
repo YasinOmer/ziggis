@@ -1,4 +1,3 @@
-=zigGIS 1.1=
 developers: Abe Gillspie, Paolo Corti, Bill Dollins
 
 [http://code.google.com/p/ziggis http://portfolio.fringeblog.com/ill/zg-logo.jpg]
@@ -63,33 +62,37 @@ For support and help please don't email us or post the help request in the PostG
 
 ==RELEASE HISTORY==
 
-===19/03/2007, zigGIS 1.2.0.0===
+===xx/yy/2007, zigGIS 1.2.1.0===
+ 
+ * Added support for PostGIS layer with a srid not supported from Esri (factory code not exists for such a srid, in that case the PostGIS layer is still added to ArcMap but it won't be able to project it in a different projection system)
+ * Added a warning if a gid field is not provided in the PostGIS layer (in this case layer is not added)
+
+===21/03/2007, zigGIS 1.2.0.0===
+ 
  * Added support for selection
  * All of the symbology renderers are now working
  * Document's persistence was repaired (in 1.1.1.0 and 1.1.0.20768 was broken)
  * Work for Postgis ArcCatalog object has started (thanks Bill!). You will now find in ArcCatalog a pretty "OGC Database Connection" node. From there it will be possible to create the OGC connection, for now only PostGIS ("Add new PostGis connection"), but maybe in the future also for other OGC db (Oracle Spatial, MySQL Spatial...). The tool is still not working, at this release, but gives an idea of what zigGis will become in the next releases.
 
 ===21/02/2007, zigGIS 1.1.1.0===
- * Added support for using zigGis for ArcObjects customisation (ArcMap VBA, Visual Basic 6...). 
-
-Previous versions of PostGisWorkspaceFactory was not correctly exposed to COM.
+ 
+ * Added support for using zigGis for ArcObjects customisation (ArcMap VBA, Visual Basic 6...). Previous versions of PostGisWorkspaceFactory was not correctly exposed to COM.
 
 ===14/02/2007, zigGIS 1.1.0.20768===
 
  * Added support for reprojecting zigGIS data
-
  * Implemented PostGisEnumDatasetName for iterating PostGis layer tables
-
  * Implemented PostGisWorkspaceFactory.Open from opening a PostGIS workspace factory not necessarily from a zig File but from a PropertySet (in the SDEWorkspaceFactory fashion)
-
  * The Add PostGIS data form has been made it better: there is not need now to type the PostGIS table name, but after selecting a zig file it will be possible to add on or more layers, shown in a checkboxlist
 
 ===10/01/2007, zigGIS 1.1.0===
+ 
  * Added support for PostGIS layer with a srid different than the undefined one (srid=-1). 
 
 Previous versions were not drawing these layer.
 
 ===02/01/2007, zigGIS 1.1.0===
+ 
  * Added support for int8, numeric and date Postgre datatypes. At this time Postgre tested datatypes for ZigGis are: serial, int8, int4, numeric, geometry, date
 
  

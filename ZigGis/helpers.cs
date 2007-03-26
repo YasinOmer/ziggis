@@ -257,15 +257,17 @@ namespace ZigGis.Utilities
 				{
 					outSrid = -1;
 				}
+				//if outSrid=-1, could be that the Sr is set to Unknown, but srid is != -1 (for PostGIS layers with a srid not supported from esri, ex: 27563)
+				if (outSrid == -1 && postGisLayer.srid > 0)
+				{
+					outSrid = postGisLayer.srid;
+				}
 
 				aoFieldsToPostGisFields(ref fields, postGisLayer, outSrid);
 				StringBuilder sb = new StringBuilder(query.WhereClause);
 				//if there is a spatial filter do the following...
 				if (sQuery != null)
 				{
-					//int srid = -1;
-					int layerSrid = postGisLayer.srid;
-
 					/*
 					ISpatialReference sRef = sQuery.Geometry.SpatialReference;
 					if (sRef != null && sRef.FactoryCode != 0)
@@ -286,14 +288,16 @@ namespace ZigGis.Utilities
 					if (sb.Length > 0)
 						sb.Append(" and ");
 
-					sb.Append("intersects(transform(");
+				    //Paolo: for srid=-1 not doing transform
+					sb.Append("intersects(");
+					sb.Append("transform(");
 					sb.Append(aoPolygonToWkt((IPolygon)pg, true, outSrid));
 					sb.Append("," + outSrid.ToString() + "),");
 					sb.Append("transform(" + postGisLayer.geometryField + "," + outSrid.ToString() + ")");
 					sb.Append(")=true");
 				}
 				where = sb.ToString();
-				System.Diagnostics.EventLog.WriteEntry("GeomHelper.aoQryToPostGisQry", where, System.Diagnostics.EventLogEntryType.Information);
+				//System.Diagnostics.EventLog.WriteEntry("GeomHelper.aoQryToPostGisQry", where, System.Diagnostics.EventLogEntryType.Information);
 
 				if (log.IsDebugEnabled)
 				{
@@ -357,6 +361,33 @@ namespace ZigGis.Utilities
 			fields = sb.ToString();
 			log.leaveFunc();
 		}
+
+		static public ISpatialReference setEsriSpatiaReferenceFromSrid(int srid)
+		{
+			//there is not always a perfect corrispondence between PostGIS srid and Esri Factory code: so we have to catch the possible error in CreateSpatialReference, and in that case set it to Unknow (it won't be possible to project layers, but at least it will be displayed)
+			ISpatialReference sr;
+			try
+			{
+				//Paolo : set Spatial Reference
+				ISpatialReferenceFactory2 srf = new SpatialReferenceEnvironmentClass();
+				if (srid == -1)
+				{
+					sr = new UnknownCoordinateSystemClass();
+				}
+				else
+				{
+					sr = srf.CreateSpatialReference(srid);
+				}
+				return sr;
+			}
+			catch
+			{
+				//PostGis srid is not implemented as an Esri Factory Code
+				sr = new UnknownCoordinateSystemClass();
+				return sr;
+			}
+		}
+
 	}
 
     enum BitConversion { toLittle, toBig, none };
