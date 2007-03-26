@@ -763,24 +763,24 @@ namespace ZigGis.ArcGIS.Geodatabase
 
         public void StartEditOperation()
         {
-            System.Windows.Forms.MessageBox.Show("Edit operation started");
+            //System.Windows.Forms.MessageBox.Show("Edit operation started");
         }
 
         public void StartEditing(bool withUndoRedo)
         {
             m_beingEdited = true;
-            System.Windows.Forms.MessageBox.Show("StartEditing");
+            //System.Windows.Forms.MessageBox.Show("StartEditing");
         }
 
         public void StopEditOperation()
         {
-            System.Windows.Forms.MessageBox.Show("Edit operation stopped");
+            //System.Windows.Forms.MessageBox.Show("Edit operation stopped");
         }
 
         public void StopEditing(bool saveEdits)
         {
             m_beingEdited = false;
-            System.Windows.Forms.MessageBox.Show("StopEditing");
+            //System.Windows.Forms.MessageBox.Show("StopEditing");
         }
 
         public void UndoEditOperation()

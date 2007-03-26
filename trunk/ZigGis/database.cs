@@ -320,15 +320,15 @@ namespace ZigGis.PostGis
     {
         static public string createSelectSql(string table, string fields)
         {
-            return createSelectSql(table, fields, null, null);
+            return createSelectSql(table, fields, null, null, null);
         }
         
         static public string createSelectSql(string table, string fields, string where)
         {
-            return createSelectSql(table, fields, null, where);
+            return createSelectSql(table, fields, null, where, null);
         }
 
-        static public string createSelectSql(string table, string fields, string join, string where)
+		static public string createSelectSql(string table, string fields, string join, string where, string otherClause)
         {
             nullString(ref join);
             nullString(ref where);
@@ -347,6 +347,10 @@ namespace ZigGis.PostGis
                 sb.Append(" where ");
                 sb.Append(where);
             }
+			if (otherClause != null)
+			{
+				sb.Append(" " + otherClause);
+			}
             return sb.ToString();
         }
 

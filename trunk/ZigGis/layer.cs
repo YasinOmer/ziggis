@@ -83,8 +83,7 @@ namespace ZigGis.PostGis
                             "g.*,g.oid,s." + PostGisConstants.spatialReferenceSrField,
                             "left join " + PostGisConstants.spatialReferenceTable + " as s on g." +
                             PostGisConstants.spatialReferenceIdField + "=s." +
-                            PostGisConstants.spatialReferenceIdField,
-                            where);
+                            PostGisConstants.spatialReferenceIdField, where, null);
             
             AutoDataReader dr = connection.doQuery(sql);
             if (dr.Read())
@@ -93,16 +92,14 @@ namespace ZigGis.PostGis
                 m_geomType = DbHelper.getValueAsString(dr[PostGisConstants.geometryTypeField]);
                 m_spatialRefText = DbHelper.getValueAsString(dr[PostGisConstants.spatialReferenceSrField]);
 				m_srid = (int)dr[PostGisConstants.spatialReferenceIdField];
-				//Paolo : set Spatial Reference
-				ISpatialReferenceFactory2 srf = new SpatialReferenceEnvironmentClass();
-				if (m_srid == -1)
+
+				m_spatialReference = GeomHelper.setEsriSpatiaReferenceFromSrid(m_srid);
+				if (m_spatialReference.FactoryCode == 0 && m_srid != -1)
 				{
-					m_spatialReference = new UnknownCoordinateSystemClass();
+					//PostGis srid is not implemented as an Esri Factory Code
+					System.Windows.Forms.MessageBox.Show("PostGis srid is not implemented as an Esri Factory Code: this PostGis table can not be reprojected in ArcMap.");
 				}
-				else
-				{
-					m_spatialReference = srf.CreateSpatialReference(m_srid);
-				}
+
                 if (loadFromOid)
                 {
                     m_schema = DbHelper.getValueAsString(dr[PostGisConstants.schemaField]);
@@ -190,7 +187,8 @@ namespace ZigGis.PostGis
             {
                 if (log.IsDebugEnabled) log.Debug("1");
                 // Query the view for its fields and store them in the array.
-                string sql = DbHelper.createSelectSql(schemaAndView, "*", "gid=-1");
+				// Paolo: gid is not always in the PostGIS layer: let's use limit 1 instead than gid=-1
+				string sql = DbHelper.createSelectSql(schemaAndView, "*", null, null, "limit 1");
                 if (log.IsDebugEnabled) log.Debug(sql);
                 using (AutoDataReader dr = connection.doQuery(sql))
                 {
@@ -200,8 +198,8 @@ namespace ZigGis.PostGis
                 }
             }
 
-            log.leaveFunc();
-            
+			log.leaveFunc();
+
             return m_fields;
         }
 
@@ -211,7 +209,7 @@ namespace ZigGis.PostGis
             {
                 byte [] retVal = null;
 				//TODO we should transform the extent here, according to srid (Paolo)
-                string sql = DbHelper.createSelectSql(schemaAndView, "asbinary(extent(" + geometryField + "))", null);
+                string sql = DbHelper.createSelectSql(schemaAndView, "asbinary(extent(" + geometryField + "))");
                 using (AutoDataReader dr = connection.doQuery(sql))
                 {
                     if (dr.Read())

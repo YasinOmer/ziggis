@@ -88,7 +88,8 @@ namespace ZigGis.ArcGIS.Geodatabase
 					if (m_layer.srid != -1)
 					{
 						ISpatialReferenceFactory2 srf = new SpatialReferenceEnvironmentClass();
-						m_spaRef = srf.CreateSpatialReference(m_layer.srid); ;
+						//m_spaRef = srf.CreateSpatialReference(m_layer.srid);
+						m_spaRef = GeomHelper.setEsriSpatiaReferenceFromSrid(m_layer.srid);
 					}
         }
 
@@ -1013,6 +1014,7 @@ namespace ZigGis.ArcGIS.Geodatabase
 
             try
             {
+				bool hasGIDField = false;
                 if (log.IsDebugEnabled) log.Debug("1");
                 DataTable dataFields = postGisLayer.getDataFields(false);
                 if (log.IsDebugEnabled) log.Debug("2");
@@ -1025,8 +1027,17 @@ namespace ZigGis.ArcGIS.Geodatabase
                     pgisFld = new PostGisField(postGisLayer, r, i);
                     m_flds[i] = pgisFld;
                     m_ids.Add(pgisFld.Name, i);
+					if(pgisFld.Name.ToLower()=="gid")
+					{
+						hasGIDField=true;
+					}
                     ++i;
                 }
+				//gid (int4 or int8) is mandatory as GDB unique OID
+				if (hasGIDField==false)
+				{
+					System.Windows.Forms.MessageBox.Show("This PostGis layer will be added in ArcMap but will not correctly work for some funcitonality (selections, rendering, ...): it misses a mandatory gid (int) field as unique OID for each feature. This gid field is necessary for the Esri Geodatabase model.");
+				}
             }
             catch (Exception e)
             {
