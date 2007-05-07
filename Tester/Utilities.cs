@@ -18,7 +18,7 @@ using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.esriSystem;
 
-using net.paolocorti.Esri.ArcObjects.Samples.Rendering;
+using ZigGis.Tester;
 
 namespace zigGISTester.Utilities
 {

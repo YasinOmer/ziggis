@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-using net.paolocorti.Esri.ArcObjects.Samples.Rendering;
-
 using ZigGis.ArcGIS.Geodatabase;
 using zigGISTester.Utilities;
 using ESRI.ArcGIS.Geodatabase;
