@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 using ZigGis.ArcGIS.Geodatabase;
-using net.paolocorti.Esri.ArcObjects.Samples.Rendering;
 
 #if ARCGIS_8X
 using ESRI.ArcObjects.Core;

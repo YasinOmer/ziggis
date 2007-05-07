@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using ZigGis.Utilities;
-using ZigGis.ArcGIS.Carto;
 
 
 #if ARCGIS_8X

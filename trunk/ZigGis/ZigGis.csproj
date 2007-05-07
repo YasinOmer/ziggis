@@ -98,7 +98,6 @@
     <Compile Include="logger.cs" />
     <Compile Include="postgis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderers.cs" />
     <Compile Include="stream_helper.cs" />
     <Compile Include="TestCode.cs" />
     <Compile Include="Tester.cs" />

@@ -7,7 +7,7 @@ zigGIS is an ArcGis plug-in that allows loading and viewing of PostGIS layers. T
 
 The official zigGIS web site is http://code.google.com/p/ziggis/. The old ZigGis web site is no longer supported.
 
-We have imported the svn project (zigGIS 1.1 release) in google code, source code can be checked out at
+We have imported the svn project in google code, source code can be checked out at
 this address:
 
 http://ziggis.googlecode.com/svn/
@@ -54,6 +54,10 @@ Press ok, and if everything is fine the PostGis layer should be added in ArcMap.
 
 Please consider that this is a very early first releaze of zigGIS, so there maybe be several issues.
 Some issues (symbology not working, selection not working, editing not let,...) are already being tracked, and we are working in the next weeks to solve them.
+
+Prerequisite (at 1.2.0.0) for viewing PostGIS layers in ArcMap with zigGIS:
+ * your PostGIS table MUST have a field named gid (integer data type) that will uniquely identify each feature (ref: http://code.google.com/p/ziggis/issues/detail?id=13&can=2&q=);
+ * your srid should be a valid one in the Esri factorycode (ref: http://code.google.com/p/ziggis/issues/detail?id=12&can=2&q=);
 
 You can check the Issues here: http://code.google.com/p/ziggis/issues/list
 Feel free to add any issue you get in if it is not in this list, or any request you wish to be implemented in future releases.
