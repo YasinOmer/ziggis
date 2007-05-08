@@ -12,6 +12,18 @@ using ESRI.ArcGIS.esriSystem;
 
 namespace ZigGis.PostGis.Catalog
 {
+    //[ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
+    //Guid("2E9B4CA5-4F53-4068-AEB0-72D04EE8F742"), ComVisible(true)]
+    [Guid("2E9B4CA5-4F53-4068-AEB0-72D04EE8F742")]
+    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    public interface IGxPostGisDatabase
+    {
+        string Host { get;set;}
+        int Port { get;set;}
+        string Database { get;set;}
+        string UserName { get;set;}
+        string Password { get;set;}
+    }
     [ClassInterface(ClassInterfaceType.None)]
     [ProgId("ComInteropClass")]
     [Guid("AFFC20DB-F7C7-4cc5-95A2-E6914EBD94A1")]
@@ -137,7 +149,7 @@ namespace ZigGis.PostGis.Catalog
 
         public ESRI.ArcGIS.esriSystem.UID ClassID
         {
-            get 
+            get
             {
                 IUID uid = new UIDClass();
                 uid.Value = "{AFFC20DB-F7C7-4cc5-95A2-E6914EBD94A1}";
@@ -199,7 +211,7 @@ namespace ZigGis.PostGis.Catalog
 
         public IEnumGxObject Children
         {
-            get 
+            get
             {
                 addWizards();
                 return m_children as IEnumGxObject;
@@ -486,6 +498,301 @@ namespace ZigGis.PostGis.Catalog
         {
             ZigGis.ArcGIS.ArcMapUI.PostGisConnectionForm frmPgConnect = new ZigGis.ArcGIS.ArcMapUI.PostGisConnectionForm(hParentWnd);
             frmPgConnect.Show();
+        }
+        #endregion
+    }
+    [ClassInterface(ClassInterfaceType.None)]
+    [ProgId("zigCatalog.GxPostGisDatabase")]
+    [Guid("4625623D-0498-482a-8992-B71DBC9DB304")]
+    public class GxPostGisDatabase : IGxPostGisDatabase, IGxDatabase, IGxObject, IGxObjectContainer, IGxObjectEdit, IGxObjectUI, IGxRemoteContainer
+    {
+        private IGxObject m_parentObject = null;
+        private IGxCatalog m_parentCatalog = null;
+        private IGxObjectArray m_children = null;
+        private bool m_childrenLoaded = false;
+        private Bitmap m_bitmapLrg;
+        private IntPtr m_hBitmapLrg;
+        private Bitmap m_bitmapSm;
+        private IntPtr m_hBitmapSm;
+
+        #region Windows API
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        static extern bool DeleteObject(IntPtr hObject);
+        #endregion
+
+        #region Constructors/Destructors
+        public GxPostGisDatabase()
+        {
+            m_bitmapLrg = new Bitmap(GetType().Assembly.GetManifestResourceStream("Pulp.ArcGis.ZigGis.images.ziggis_big.bmp"));
+            m_bitmapLrg.MakeTransparent(m_bitmapLrg.GetPixel(1, 1));
+            m_hBitmapLrg = m_bitmapLrg.GetHbitmap();
+            m_bitmapSm = new Bitmap(GetType().Assembly.GetManifestResourceStream("Pulp.ArcGis.ZigGis.images.ziggis_small.bmp"));
+            m_bitmapSm.MakeTransparent(m_bitmapSm.GetPixel(1, 1));
+            m_hBitmapSm = m_bitmapSm.GetHbitmap();
+
+        }
+
+        ~GxPostGisDatabase()
+        {
+            DeleteObject(m_hBitmapLrg);
+            DeleteObject(m_hBitmapSm);
+        }
+        #endregion
+
+        #region IGxPostGisDatabase Members
+
+        public string Host
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public int Port
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public string Database
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public string UserName
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        #endregion
+
+        #region IGxDatabase Members
+
+        public void Disconnect()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public bool IsConnected
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public bool IsRemoteDatabase
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public ESRI.ArcGIS.Geodatabase.IWorkspace Workspace
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public ESRI.ArcGIS.Geodatabase.IWorkspaceName WorkspaceName
+        {
+            get
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+            set
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        #endregion
+
+        #region IGxObject Members
+
+        public void Attach(IGxObject Parent, IGxCatalog pCatalog)
+        {
+            m_parentCatalog = pCatalog;
+            m_parentObject = Parent;
+            //throw new Exception("The method or operation is not implemented.");
+        }
+
+        public string BaseName
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public string Category
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public UID ClassID
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public void Detach()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public string FullName
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public IName InternalObjectName
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public bool IsValid
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public string Name
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public IGxObject Parent
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public void Refresh()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IGxObjectContainer Members
+
+        public IGxObject AddChild(IGxObject child)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public bool AreChildrenViewable
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public IEnumGxObject Children
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public void DeleteChild(IGxObject child)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public bool HasChildren
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        #endregion
+
+        #region IGxObjectEdit Members
+
+        public bool CanCopy()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public bool CanDelete()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public bool CanRename()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void Delete()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void EditProperties(int hParent)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void Rename(string newShortName)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region IGxObjectUI Members
+
+        public UID ContextMenu
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public int LargeImage
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public int LargeSelectedImage
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public UID NewMenu
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public int SmallImage
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+
+        public int SmallSelectedImage
+        {
+            get { throw new Exception("The method or operation is not implemented."); }
         }
 
         #endregion
