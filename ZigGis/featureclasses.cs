@@ -89,7 +89,8 @@ namespace ZigGis.ArcGIS.Geodatabase
 					{
 						ISpatialReferenceFactory2 srf = new SpatialReferenceEnvironmentClass();
 						//m_spaRef = srf.CreateSpatialReference(m_layer.srid);
-						m_spaRef = GeomHelper.setEsriSpatiaReferenceFromSrid(m_layer.srid);
+                        m_spaRef = GeomHelper.setEsriSpatiaReferenceFromSrText(m_layer.srid, m_layer.connection);
+						//m_spaRef = GeomHelper.setEsriSpatiaReferenceFromSrid(m_layer.srid);
 					}
         }
 
