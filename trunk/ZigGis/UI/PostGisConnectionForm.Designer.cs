@@ -28,6 +28,7 @@ namespace ZigGis.ArcGIS.ArcMapUI
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtServer = new System.Windows.Forms.TextBox();
             this.txtSchema = new System.Windows.Forms.TextBox();
             this.txtDatabase = new System.Windows.Forms.TextBox();
@@ -46,6 +47,7 @@ namespace ZigGis.ArcGIS.ArcMapUI
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.fdLogFile = new System.Windows.Forms.SaveFileDialog();
+            this.tmrValidate = new System.Windows.Forms.Timer(this.components);
             this.grpLogin.SuspendLayout();
             this.grpLogFile.SuspendLayout();
             this.SuspendLayout();
@@ -119,6 +121,7 @@ namespace ZigGis.ArcGIS.ArcMapUI
             // 
             this.txtPassword.Location = new System.Drawing.Point(105, 50);
             this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(245, 20);
             this.txtPassword.TabIndex = 4;
             // 
@@ -191,6 +194,7 @@ namespace ZigGis.ArcGIS.ArcMapUI
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnOK
             // 
@@ -205,6 +209,11 @@ namespace ZigGis.ArcGIS.ArcMapUI
             // fdLogFile
             // 
             this.fdLogFile.DefaultExt = "log";
+            // 
+            // tmrValidate
+            // 
+            this.tmrValidate.Enabled = true;
+            this.tmrValidate.Tick += new System.EventHandler(this.tmrValidate_Tick);
             // 
             // PostGisConnectionForm
             // 
@@ -257,5 +266,6 @@ namespace ZigGis.ArcGIS.ArcMapUI
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.SaveFileDialog fdLogFile;
+        private System.Windows.Forms.Timer tmrValidate;
     }
 }
