@@ -372,24 +372,25 @@ namespace ZigGis.PostGis.Catalog
                 if (!m_childrenLoaded)
                 {
                     //System.Windows.Forms.MessageBox.Show("adding layers");
-                    IEnumDatasetName edsn = _wkspc.get_DatasetNames(esriDatasetType.esriDTFeatureClass);
-                    IDatasetName dsn;
+                    IEnumDataset edsn = _wkspc.get_Datasets(esriDatasetType.esriDTFeatureClass);
+                    IDataset dsn;
                     // Load PostGIS layer names
                     while ((dsn = edsn.Next()) != null)
                     {
+                        
+                        //IFeatureWorkspace fwks = (IFeatureWorkspace)_wkspc;
+                        ////System.Windows.Forms.MessageBox.Show(dsn.Name);
+                        //IFeatureClass fc = fwks.OpenFeatureClass(dsn.Name);
+                        ////bool tst = (fc == null);
+                        ////System.Windows.Forms.MessageBox.Show(tst.ToString());
+                        //IFeatureLayer layer = new PostGisFeatureLayer();
+                        ////IFeatureLayer layer = new FeatureLayerClass();
 
-                        IFeatureWorkspace fwks = (IFeatureWorkspace)_wkspc;
-                        //System.Windows.Forms.MessageBox.Show(dsn.Name);
-                        IFeatureClass fc = fwks.OpenFeatureClass(dsn.Name);
-                        //bool tst = (fc == null);
-                        //System.Windows.Forms.MessageBox.Show(tst.ToString());
-                        IFeatureLayer layer = new PostGisFeatureLayer();
-                        //IFeatureLayer layer = new FeatureLayerClass();
-
-                        layer.FeatureClass = fc;
-                        layer.Name = fc.AliasName;
-                        GxPostGisLayer gxl = new GxPostGisLayer((ILayer)layer);
-                        m_children.Insert(-1, (IGxObject)gxl);
+                        //layer.FeatureClass = fc;
+                        //layer.Name = fc.AliasName;
+                        //GxPostGisLayer gxl = new GxPostGisLayer((ILayer)layer);
+                        GxPostGisDataset gxd = new GxPostGisDataset(dsn);
+                        m_children.Insert(-1, (IGxObject)gxd);
 
                     }
                 }
