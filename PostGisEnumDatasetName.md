@@ -1,0 +1,8 @@
+# Introduction #
+
+This class is an implementation of ESRI.ArcGIS.Geodatabase.IEnumDataset.
+
+
+# Details #
+
+This class enables the iteration of the PostGIS datasets (layers) in the current database connection. zigGIS connects to one PostgreSQL database per connection so this class enumerates the PostGIS layers in that database.

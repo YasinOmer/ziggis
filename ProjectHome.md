@@ -1,0 +1,1 @@
+zigGIS v1.2 is no longer supported although it will remain available here for download.  zigGIS v2.0 is now a commercial product and includes major stability improvements, performance increases, and full editing capabilities.  For more details, please see [Obtuse Software's website](http://www.obtusesoft.com).
